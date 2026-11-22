@@ -79,11 +79,14 @@ jobs:
 
   sync:
     needs: changes
-    if: (needs.changes.outputs.sync == 'true' || github.event_name == 'workflow_dispatch') && hashFiles('dynamics-sync/wrangler.toml', 'dynamics-sync/wrangler.jsonc') != ''
+    if: needs.changes.outputs.sync == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: cloudflare/wrangler-action@v3
+      # hashFiles is only allowed on a step, not on a job: until the Worker's
+      # source is in dynamics-sync/, this step is skipped and the job passes.
+      - if: hashFiles('dynamics-sync/wrangler.toml', 'dynamics-sync/wrangler.jsonc') != ''
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
