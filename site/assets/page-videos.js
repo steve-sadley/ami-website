@@ -53,11 +53,12 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
 const modal = document.getElementById('vmodal'), frame = document.getElementById('vframe');
 
 function open_(el){
-  const id = el.dataset.vimeo;
-  // A recording with no Vimeo identifier has nothing to play. Sending somebody to
-  // an empty player is worse than saying so.
-  if (!id) { location.href = '/news?kind=video'; return; }
-  frame.src = 'https://player.vimeo.com/video/' + encodeURIComponent(id) + '?autoplay=1';
+  // Vimeo or YouTube, whatever the office pasted (videoEmbed in site.js). A
+  // recording with nothing playable has nothing to show. Sending somebody to an
+  // empty player is worse than saying so.
+  const src = videoEmbed(el.dataset.vimeo, true);
+  if (!src) { location.href = '/news?kind=video'; return; }
+  frame.src = src;
   frame.title = el.dataset.title || 'AMI video';
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';

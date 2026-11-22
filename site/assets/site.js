@@ -742,6 +742,23 @@ function fillFaq(el, it, i, firstOpen){
 
 // A body written before the editor existed is plain text with blank lines in it.
 // One function decides which it is looking at, so no page has to.
+/* The player address for a video, from whatever the office pasted: a Vimeo
+   number, a Vimeo address, a YouTube address in any of its usual shapes
+   (watch?v=, youtu.be/, /embed/, /shorts/, /live/) or a bare YouTube id. The
+   field is still called vimeo_id in the database, because YouTube support came
+   later (site 87). Anything not recognised gives null, so nothing typed in the
+   admin app ever becomes an address of somebody else's choosing. YouTube plays
+   from youtube-nocookie.com, which sets no tracking cookies until play. */
+function videoEmbed(raw, autoplay){
+  const s = String(raw || '').trim();
+  let m = s.match(/^(?:https?:\/\/)?(?:www\.|player\.)?vimeo\.com\/(?:video\/)?(\d{6,12})(?:[/?#]|$)/i) || s.match(/^(\d{6,12})$/);
+  if (m) return 'https://player.vimeo.com/video/' + m[1] + (autoplay ? '?autoplay=1' : '');
+  m = s.match(/^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[&?#/]|$)/i)
+   || s.match(/^([A-Za-z0-9_-]{11})$/);
+  if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1] + '?rel=0' + (autoplay ? '&autoplay=1' : '');
+  return null;
+}
+
 function bodyHtml(body){
   if (!body) return '';
   return /<[a-z][\s\S]*>/i.test(body)

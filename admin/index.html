@@ -474,7 +474,7 @@ const { createClient } = window.supabase;
 
    Bump it on every bundle. A number that lags is worse than none, because it
    answers the question wrongly rather than not at all. */
-const APP_VERSION = 49;
+const APP_VERSION = 50;
 
 /* =====================================================================
    PAGES, the document types
@@ -909,8 +909,8 @@ const SCREENS = [
       {c:'title',        t:'text', req:true},
       {c:'slug',         t:'slug', from:'title', req:true},
       {c:'category',     t:'text'},
-      {c:'vimeo_id',     t:'text', label:'Vimeo id', req:true,
-       help:'The number at the end of the Vimeo address. From vimeo.com/123456789, enter 123456789.'},
+      {c:'vimeo_id',     t:'text', label:'Video link', req:true,
+       help:'Paste the address of the video on Vimeo or YouTube, for example vimeo.com/123456789 or youtube.com/watch?v=Sv42d-UJy6U. A Vimeo number on its own also works.'},
       {c:'description',  t:'long'},
       {c:'image_path',   t:'image', label:'Still image', bucket:'public-media', folder:''},
       {c:'members_only', t:'bool', label:'Members only'},

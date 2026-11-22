@@ -58,9 +58,11 @@ function render(r){
   if (r.kind === 'guidance' && (r.has_document || r.storage_path)) {
     extra = `<p style="margin:26px 0"><button class="btn btn-p" id="dl">Download the document</button></p>`;
   }
-  if (r.kind === 'video' && r.vimeo_id) {
+  // Vimeo or YouTube (videoEmbed in site.js). Nothing recognisable, no player.
+  const player = r.kind === 'video' ? videoEmbed(r.vimeo_id) : null;
+  if (player) {
     extraMain = `<div class="vframe" style="margin:0 0 26px">
-      <iframe src="https://player.vimeo.com/video/${encodeURIComponent(r.vimeo_id)}"
+      <iframe src="${esc(player)}"
         allow="fullscreen; picture-in-picture" title="${esc(r.title)}"></iframe></div>`;
   }
 
