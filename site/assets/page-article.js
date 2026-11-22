@@ -54,7 +54,8 @@ function render(r){
         r.starts_at ? ', ' + timeOf(r.starts_at) : ''}</span></li>
       ${r.location ? `<li><b>Where</b><span>${esc(r.location)}</span></li>` : ''}</ul>`;
   }
-  if (r.kind === 'guidance' && r.storage_path) {
+  // has_document since 0067; storage_path kept for the moment before 0067 runs.
+  if (r.kind === 'guidance' && (r.has_document || r.storage_path)) {
     extra = `<p style="margin:26px 0"><button class="btn btn-p" id="dl">Download the document</button></p>`;
   }
   if (r.kind === 'video' && r.vimeo_id) {

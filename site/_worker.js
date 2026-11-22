@@ -3163,6 +3163,15 @@ async function dbAnswer(res, fn){
   let out = null; try { out = text ? JSON.parse(text) : null; } catch {}
   if (res.ok) return Array.isArray(out) ? out[0] : out;
   const code = out && out.code;
+  // A sign in the database will not accept (made up, edited or expired) comes
+  // back as 401 with a PGRST3xx code. That is a refusal, not a fault: say so,
+  // rather than reporting "something went wrong" with a 500. Found by security
+  // check 9 on the office's cancel door, 22 November 2026.
+  if (res.status === 401 || code === 'PGRST301' || code === 'PGRST302' || code === 'PGRST303') {
+    const err = new Error('Your sign in was not accepted. Sign in again and try once more.');
+    err.told = true; err.status = 401; err.at = 'auth';
+    throw err;
+  }
   const told = { P0002: 404, '22023': 400, '23505': 409, '42501': 403 };
   if (told[code]) {
     const err = new Error(out.message);

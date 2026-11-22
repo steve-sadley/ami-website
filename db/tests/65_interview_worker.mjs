@@ -237,6 +237,17 @@ section('cancelling');
   const pre = await worker.fetch(new Request('https://staging.ami.uk.com/api/interview/office-cancel',
     { method: 'OPTIONS', headers: { Origin: 'https://admin-staging.ami.uk.com' } }), ENV);
   ok(pre.status === 204 && /Authorization/.test(pre.headers.get('Access-Control-Allow-Headers')), 'the preflight is answered');
+  // Security check 9: a made up sign in was answered with a 500. The database
+  // refuses it with 401 PGRST301, and that must come back as a refusal.
+  reset();
+  over.interview_office_cancel = () => J({ code: 'PGRST301', message: 'JWSError JWSInvalidSignature' }, 401);
+  const r4 = await post('office-cancel', { booking: 'bk-9', reason: 'x' },
+    { headers: { Authorization: 'Bearer MADE-UP', Origin: 'https://admin-staging.ami.uk.com' } });
+  ok(r4.status === 401 && !find('/cancel'), 'a sign in the database does not accept is refused with 401, not a 500, and nothing is cancelled');
+  reset();
+  over.interview_office_cancel = () => J({ code: '42501', message: 'Only membership staff can cancel an interview.' }, 403);
+  const r5 = await post('office-cancel', { booking: 'bk-9', reason: 'x' }, { headers: { Authorization: 'Bearer MEMBER' } });
+  ok(r5.status === 403, 'a member who is not staff is refused with 403');
   reset();
   const r3 = await post('slots', { token: 'x' }, { headers: { Origin: 'https://admin-staging.ami.uk.com' } });
   ok(!r3.headers.get('Access-Control-Allow-Origin'), 'the applicant doors are not opened to other origins');
