@@ -117,7 +117,7 @@ select cmp_ok(
 select is(
   (select count(distinct page_key) from public.page_blocks
     where page_key not like 'zz-%'),
-  14::bigint, 'fourteen pages have blocks (0065 added professional conduct, committees and guidance), and the privacy notice is not one of them');
+  15::bigint, 'fifteen pages have blocks (0065 added professional conduct, committees and guidance, 0069 the rules), and the privacy notice is not one of them');
 
 select is(
   (select count(*) from public.page_blocks where page_key = 'privacy'),

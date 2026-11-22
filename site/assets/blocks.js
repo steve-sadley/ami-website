@@ -65,7 +65,7 @@ const BLOCK_MAP = {
     "more_link": [".split .txt a.btn", "links"],
     "standards_eyebrow": ["#standards .eyebrow", "line"],
     "standards_heading": ["#standards h2", "line"],
-    "standards_cards": ["#standards .cards2 .qcard", "list", "card"],
+    "standards_cards": ["#standards .cards3 .qcard", "list", "card"],
     "steps_eyebrow": ["#join .eyebrow", "line"],
     "steps_heading": ["#join h2", "line"],
     "steps": [".steprow .step", "list", "step"],
@@ -178,6 +178,19 @@ const BLOCK_MAP = {
     "intro": ["#intro", "rich"],
     "notify_heading": [".aside h3", "line"],
     "notify": [".aside ul li", "list", "bullet"],
+    "cta_heading": [".cta h2", "line"],
+    "cta_body": [".cta p", "prose"],
+    "cta_link": [".cta a.btn", "links"]
+  },
+  "rules": {
+    "banner_photo": [".pbanner.img", "image"],
+    "banner_heading": [".pbanner h1", "line"],
+    "banner_lede": [".pbanner p", "rich"],
+    "rules_heading": [".intro-grid .intro h2", "line"],
+    "rules": ["#rules", "rich"],
+    "glance_heading": [".aside h3", "line"],
+    "glance": [".aside ul li", "list", "bullet"],
+    "rules_pdf": [".aside a.btn", "links"],
     "cta_heading": [".cta h2", "line"],
     "cta_body": [".cta p", "prose"],
     "cta_link": [".cta a.btn", "links"]

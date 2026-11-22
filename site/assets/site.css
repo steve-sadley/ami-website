@@ -491,6 +491,17 @@ footer .flogo img{height:38px;width:auto}
 .intro h2{font-size:30px;font-weight:800;margin-bottom:16px}
 .intro p{font-size:16px;color:var(--muted);margin-bottom:14px}
 .aside{padding:28px}
+/* The Rules of membership page (site 87): a long legal text in the intro
+   column. Section headings stand clear, lists read as lists, the mission and
+   vision statements sit as quotes, and the summary box stays in view while the
+   reader scrolls the rules beside it. */
+.intro.rules h3{font-size:20px;font-weight:800;margin:34px 0 12px}
+.intro.rules h3:first-child{margin-top:4px}
+.intro.rules ul{margin:-4px 0 18px 22px;color:var(--muted);font-size:16px;line-height:1.7}
+.intro.rules li{margin-bottom:4px}
+.intro.rules p strong{color:#fff}
+.intro.rules blockquote{border-left:4px solid #E40613;padding:4px 0 4px 18px;margin:18px 0;color:var(--muted);font-size:16px}
+@media(min-width:901px){.intro-grid:has(.intro.rules) .aside{position:sticky;top:110px}}
 .aside h3{font-size:18px;font-weight:800;margin-bottom:14px}
 .aside ul{list-style:none}
 .aside li{font-size:15px;padding:9px 0 9px 26px;position:relative;border-bottom:1px solid var(--glass-soft-bd)}

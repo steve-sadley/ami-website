@@ -106,6 +106,7 @@ function buildFooter(signedIn){
           <a href="/cscs-cards">CSCS cards</a>
           <a href="/membership#join">How to join</a>
           <a href="/register">Check a member</a>
+          <a href="/rules">Rules of membership</a>
           <a href="/professional-conduct">Professional conduct</a>
           <a href="/committees">Committees</a>
         </div>

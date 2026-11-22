@@ -128,14 +128,30 @@ const GUIDES = [
   ok(await painted(page) > 0.95 && await clean(page), 'painted, with no error and no policy violation');
   await page.close();
 
+  // the rules of membership (site 87)
+  page = await open('/rules');
+  const ru = await page.evaluate(() => ({ h1: document.querySelector('h1').textContent,
+    sections: [...document.querySelectorAll('#rules h3')].map(h => h.textContent),
+    grades: [...document.querySelectorAll('#rules p strong')].map(s => s.textContent).filter(t => !/^\d/.test(t)),
+    pdf: (document.querySelector('.aside a.btn') || {}).getAttribute && document.querySelector('.aside a.btn').getAttribute('href'),
+    nav: (document.querySelector('.navbar a.active') || {}).textContent }));
+  ok(ru.h1 === 'Rules of membership' && ru.sections.length === 10 && /^1\. Articles/.test(ru.sections[0]) && /^10\. Conflicts/.test(ru.sections[9]),
+     'the rules carry all ten sections, in order');
+  ok(['Honorary Fellow', 'Fellow', 'Full Member', 'Competent Person Qualification', 'Associate', 'Technician Grade Member',
+      'Entrant Member', 'Affiliate Member'].every(g => ru.grades.includes(g)), 'every grade of membership is set out');
+  ok(ru.pdf === '/assets/AMI-Rules-of-Membership-V6-0325.pdf', 'and the PDF of the rules is offered');
+  ok(ru.nav === 'Membership', 'it sits under Membership in the menu');
+  ok(await painted(page) > 0.95 && await clean(page), 'painted, with no error and no policy violation');
+  await page.close();
+
   // footer and membership
   page = await open('/membership');
   const f = await page.evaluate(() => ({ line: document.body.textContent.includes('checked against the AMI record'),
-    links: ['/guidance', '/professional-conduct', '/committees'].every(h => document.querySelector('footer a[href="' + h + '"]')),
+    links: ['/guidance', '/rules', '/professional-conduct', '/committees'].every(h => document.querySelector('footer a[href="' + h + '"]')),
     cards: [...document.querySelectorAll('#standards a.qcard')].map(a => a.getAttribute('href')) }));
   ok(!f.line, 'the footer no longer says every entry is checked against the AMI record');
-  ok(f.links, 'the footer links to guidance documents, professional conduct and committees');
-  ok(f.cards.join() === '/professional-conduct,/committees', 'the membership page links to both new pages');
+  ok(f.links, 'the footer links to guidance documents, the rules, professional conduct and committees');
+  ok(f.cards.join() === '/rules,/professional-conduct,/committees', 'the membership page links to the rules, conduct and committees');
   await page.close();
 
   await browser.close(); srv.close();

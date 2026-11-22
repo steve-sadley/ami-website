@@ -474,7 +474,7 @@ const { createClient } = window.supabase;
 
    Bump it on every bundle. A number that lags is worse than none, because it
    answers the question wrongly rather than not at all. */
-const APP_VERSION = 48;
+const APP_VERSION = 49;
 
 /* =====================================================================
    PAGES, the document types
@@ -570,7 +570,7 @@ const PAGES = [
     { k: "more_link", label: "More than a listing button", kind: "links" },
     { k: "standards_eyebrow", label: "Standards eyebrow", kind: "line" },
     { k: "standards_heading", label: "Standards heading", kind: "line" },
-    { k: "standards_cards", label: "Professional conduct and committees cards", kind: "list", item: {"type": "card", "fields": ["icon", "title", "body", "href"], "required": ["icon", "title", "body", "href"], "min": 2, "max": 2, "step": 2, "noun": "card"} },
+    { k: "standards_cards", label: "Professional conduct and committees cards", kind: "list", item: {"type": "card", "fields": ["icon", "title", "body", "href"], "required": ["icon", "title", "body", "href"], "min": 3, "max": 3, "step": 3, "noun": "card"} },
     { k: "steps_eyebrow", label: "Joining eyebrow", kind: "line" },
     { k: "steps_heading", label: "Joining heading", kind: "line" },
     { k: "steps", label: "The joining steps", kind: "list", item: {"type": "step", "fields": ["title", "body"], "required": ["title", "body"], "min": 3, "max": 3, "step": 3, "noun": "step"} },
@@ -683,6 +683,19 @@ const PAGES = [
     { k: "intro", label: "Opening text", kind: "rich" },
     { k: "notify_heading", label: "Telling AMI heading", kind: "line" },
     { k: "notify", label: "Telling AMI bullets", kind: "list", item: {"type": "bullet", "fields": ["text"], "required": ["text"], "min": 1, "max": 10, "step": 1, "noun": "bullet"} },
+    { k: "cta_heading", label: "Red panel heading", kind: "line" },
+    { k: "cta_body", label: "Red panel text", kind: "prose" },
+    { k: "cta_link", label: "Red panel button", kind: "links" },
+  ] },
+  { key: "rules", title: "Rules of membership", path: "/rules", fields: [
+    { k: "banner_photo", label: "Banner photograph", kind: "image" },
+    { k: "banner_heading", label: "Banner heading", kind: "line" },
+    { k: "banner_lede", label: "Banner text", kind: "rich" },
+    { k: "rules_heading", label: "Rules heading", kind: "line" },
+    { k: "rules", label: "The rules (full text)", kind: "rich" },
+    { k: "glance_heading", label: "At a glance heading", kind: "line" },
+    { k: "glance", label: "At a glance bullets", kind: "list", item: {"type": "bullet", "fields": ["text"], "required": ["text"], "min": 1, "max": 10, "step": 1, "noun": "bullet"} },
+    { k: "rules_pdf", label: "Download button (the PDF of the rules)", kind: "links" },
     { k: "cta_heading", label: "Red panel heading", kind: "line" },
     { k: "cta_body", label: "Red panel text", kind: "prose" },
     { k: "cta_link", label: "Red panel button", kind: "links" },

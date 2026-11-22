@@ -197,6 +197,9 @@ CPD_COUNTS  = {'min': 2, 'max': 2, 'step': 2, 'noun': 'card',
                'fixed_order': True, 'managed': ['bullets']}
 STEPS_FIXED = {'min': 3, 'max': 3, 'step': 3, 'noun': 'step'}
 BULLETS     = {'min': 1, 'max': 10, 'step': 1, 'noun': 'bullet'}
+# The Standards and governance cards on Membership (site 87): rules, conduct
+# and committees, three across, so always three.
+TRIO_FIXED  = {'min': 3, 'max': 3, 'step': 3, 'noun': 'card'}
 QUESTIONS   = {'min': 1, 'max': 12, 'step': 1, 'noun': 'question'}
 # The committees page (site 83). Two across, and an odd card out spans the row
 # (.cards2 > :last-child:nth-child(odd)), so any count is a whole design and
@@ -302,7 +305,7 @@ MAP = {
     ('more_link',        'links', '.split .txt a.btn'),
     ('standards_eyebrow', 'line', '#standards .eyebrow'),
     ('standards_heading', 'line', '#standards h2'),
-    ('standards_cards',  'list',  '#standards .cards2 .qcard', 'card', PAIR_FIXED),
+    ('standards_cards',  'list',  '#standards .cards3 .qcard', 'card', TRIO_FIXED),
     ('steps_eyebrow',    'line',  '#join .eyebrow'),
     ('steps_heading',    'line',  '#join h2'),
     ('steps',            'list',  '.steprow .step', 'step', STEPS_FIXED),
@@ -422,6 +425,19 @@ MAP = {
     ('cta_body',         'prose', '.cta p'),
     ('cta_link',         'links', '.cta a.btn'),
  ]),
+ 'rules.html': ('rules', [
+    ('banner_photo',     'image', '.pbanner.img'),
+    ('banner_heading',   'line',  '.pbanner h1'),
+    ('banner_lede',      'rich',  '.pbanner p'),
+    ('rules_heading',    'line',  '.intro-grid .intro h2'),
+    ('rules',            'rich',  '#rules'),
+    ('glance_heading',   'line',  '.aside h3'),
+    ('glance',           'list',  '.aside ul li', 'bullet', BULLETS),
+    ('rules_pdf',        'links', '.aside a.btn'),
+    ('cta_heading',      'line',  '.cta h2'),
+    ('cta_body',         'prose', '.cta p'),
+    ('cta_link',         'links', '.cta a.btn'),
+ ]),
  'committees.html': ('committees', [
     ('banner_photo',     'image', '.pbanner.img'),
     ('banner_heading',   'line',  '.pbanner h1'),
@@ -505,6 +521,8 @@ LABELS = {
     'events_heading': 'Events panel heading', 'events_sub': 'Events panel subheading',
     'all_eyebrow': 'Recordings eyebrow', 'all_heading': 'Recordings heading',
     'notify_heading': 'Telling AMI heading', 'notify': 'Telling AMI bullets',
+    'rules_heading': 'Rules heading', 'rules': 'The rules (full text)',
+    'rules_pdf': 'Download button (the PDF of the rules)',
     'intro_eyebrow': 'Opening eyebrow', 'intro_lede': 'Opening text',
     'committees': 'The committees',
     'standards_eyebrow': 'Standards eyebrow', 'standards_heading': 'Standards heading',
@@ -517,7 +535,7 @@ PAGE_TITLES = {
     'support': 'Support and guidance', 'contact': 'Contact',
     'apply': 'Apply for membership', 'news': 'News and events',
     'videos': 'Video library', 'register': 'Members register',
-    'professional-conduct': 'Professional conduct', 'committees': 'Committees',
+    'professional-conduct': 'Professional conduct', 'rules': 'Rules of membership', 'committees': 'Committees',
     'guidance': 'Guidance documents',
 }
 PAGE_PATHS = {
@@ -525,7 +543,7 @@ PAGE_PATHS = {
     'cpd-scheme': '/cpd-scheme', 'cscs-cards': '/cscs-cards',
     'support': '/support', 'contact': '/contact', 'apply': '/apply',
     'news': '/news', 'videos': '/videos', 'register': '/register',
-    'professional-conduct': '/professional-conduct', 'committees': '/committees',
+    'professional-conduct': '/professional-conduct', 'rules': '/rules', 'committees': '/committees',
     'guidance': '/guidance',
 }
 
