@@ -14,7 +14,7 @@ dynamics-sync/   the ami-dynamics-sync Worker, deployed with wrangler (schedule 
 ## Deploying
 
 A push to `main` deploys whatever changed, by `.github/workflows/deploy.yml`:
-site/ to ami-site, admin/ to ami-admin. The Pages projects keep all their
+site/ to ami-site, admin/ to ami-admin, dynamics-sync/ to the ami-dynamics-sync Worker. The Pages projects keep all their
 settings and secrets; this uploads to them exactly as a zip did.
 
 The database is not deployed by a push. Each migration in

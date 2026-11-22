@@ -3,8 +3,8 @@
 #   site/           to the Cloudflare Pages project ami-site (staging.ami.uk.com)
 #                   The site's own Worker, site/_worker.js, goes with it.
 #   admin/          to the Cloudflare Pages project ami-admin (admin-staging.ami.uk.com)
-#   dynamics-sync/  to the Worker ami-dynamics-sync, once its source is in this
-#                   repository
+#   dynamics-sync/  to the Worker ami-dynamics-sync. Its schedule and secrets
+#                   stay as set in the dashboard.
 #
 # The two Pages projects were made by direct upload and stay that way. This
 # uploads to them exactly as dragging a zip in did, so every setting and secret
@@ -83,8 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # hashFiles is only allowed on a step, not on a job: until the Worker's
-      # source is in dynamics-sync/, this step is skipped and the job passes.
+      # hashFiles is only allowed on a step, not on a job.
       - if: hashFiles('dynamics-sync/wrangler.toml', 'dynamics-sync/wrangler.jsonc') != ''
         uses: cloudflare/wrangler-action@v3
         with:
