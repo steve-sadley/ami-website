@@ -21,7 +21,7 @@
 const out  = document.getElementById('docs');
 const qBox = document.getElementById('q');
 const cats = document.getElementById('cats');
-let all = [], cat = '';
+let all = [], cat = '', page = pageNow();
 
 const TYPES = { pdf:'PDF', doc:'Word', docx:'Word', xls:'Excel', xlsx:'Excel',
                 ppt:'PowerPoint', pptx:'PowerPoint', csv:'CSV', txt:'Text',
@@ -60,7 +60,11 @@ function draw(){
   const q = qBox.value.trim().toLowerCase();
   const shown = all.filter(d => (!cat || d.category === cat)
     && (!q || [d.title, d.summary, d.category].join(' ').toLowerCase().includes(q)));
-  out.innerHTML = shown.length ? shown.map(card).join('')
+  // Eight to a page (site 90).
+  const pg = pageSlice(shown, page);
+  page = pg.page; keepPage(page);
+  drawPages(document.getElementById('pager'), pg.pages, page, n => { page = n; draw(); });
+  out.innerHTML = shown.length ? pg.rows.map(card).join('')
     : `<p class="note">${all.length ? 'Nothing matches that search.' : 'No guidance documents have been published yet.'}</p>`;
   out.querySelectorAll('[data-member-dl]').forEach(b => b.onclick = () => memberDownload(b));
   revealSoon();
@@ -111,10 +115,10 @@ async function memberDownload(btn){
     `<button class="btn btn-s${c === cat ? ' on' : ''}" type="button" data-cat="${esc(c)}">${c ? esc(c) : 'All'}</button>`).join('');
   cats.onclick = e => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
-    cat = b.dataset.cat;
+    cat = b.dataset.cat; page = 1;
     cats.querySelectorAll('[data-cat]').forEach(x => x.classList.toggle('on', x.dataset.cat === cat));
     draw();
   };
-  qBox.oninput = draw;
+  qBox.oninput = () => { page = 1; draw(); };
   draw();
 })();

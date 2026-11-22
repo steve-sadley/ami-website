@@ -108,25 +108,7 @@ function row(r){
   </tr>`;
 }
 
-/* Numbered pages, as the prototype had them, with the ends always reachable and
-   a gap in the middle once there are more than seven. A row of forty numbers is
-   not navigation, it is a wall. */
+// The numbers are drawn by drawPages in site.js, shared with the other lists.
 function drawPager(pages){
-  if (pages < 2) { pager.innerHTML = ''; return; }
-  const want = new Set([1, pages, page, page - 1, page + 1]);
-  if (page <= 3) [2, 3, 4].forEach(n => want.add(n));
-  if (page >= pages - 2) [pages - 1, pages - 2, pages - 3].forEach(n => want.add(n));
-
-  const list = [...want].filter(n => n >= 1 && n <= pages).sort((a, b) => a - b);
-  let html = '', last = 0;
-  list.forEach(n => {
-    if (n - last > 1) html += `<span class="gap">&hellip;</span>`;
-    html += `<button class="${n === page ? 'on' : ''}" data-p="${n}"
-      aria-label="Page ${n}"${n === page ? ' aria-current="page"' : ''}>${n}</button>`;
-    last = n;
-  });
-  pager.innerHTML = html;
-  pager.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
-    page = +b.dataset.p; draw(); window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  drawPages(pager, pages, page, n => { page = n; draw(); });
 }

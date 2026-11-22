@@ -265,6 +265,51 @@ function startReveal(){
 // Called after a page has drawn whatever it draws.
 function revealSoon(){ requestAnimationFrame(startReveal); }
 
+/* PAGES OF A LONG LIST (site 90). Steve, 22 November 2026: a list of entries
+   shows eight at a time, with numbered pages under it. News and events, the
+   video library and the guidance documents all use this; the register keeps its
+   25 a page, because it is a table people scan rather than cards they read.
+
+   pageSlice(rows, page) gives one page of rows and the facts about it.
+   drawPages(box, pages, page, go) draws the numbers: the ends always reachable
+   and a gap in the middle past seven, because a row of forty numbers is a wall,
+   not navigation. The page is kept in the address (?page=2), so going back from
+   an article lands on the page the reader came from. */
+const PER_PAGE = 8;
+function pageNow(){ const n = parseInt(qs('page'), 10); return n > 0 ? n : 1; }
+function pageSlice(rows, page, per = PER_PAGE){
+  const pages = Math.max(1, Math.ceil(rows.length / per));
+  const at = Math.min(Math.max(1, page), pages), from = (at - 1) * per;
+  return { page: at, pages, from, rows: rows.slice(from, from + per) };
+}
+function keepPage(page){
+  const u = new URL(location);
+  page > 1 ? u.searchParams.set('page', page) : u.searchParams.delete('page');
+  history.replaceState(null, '', u);
+}
+function drawPages(box, pages, page, go){
+  if (!box) return;
+  if (pages < 2) { box.innerHTML = ''; return; }
+  const want = new Set([1, pages, page, page - 1, page + 1]);
+  if (page <= 3) [2, 3, 4].forEach(n => want.add(n));
+  if (page >= pages - 2) [pages - 1, pages - 2, pages - 3].forEach(n => want.add(n));
+  const list = [...want].filter(n => n >= 1 && n <= pages).sort((a, b) => a - b);
+  let html = '', last = 0;
+  list.forEach(n => {
+    if (n - last > 1) html += `<span class="gap">&hellip;</span>`;
+    html += `<button type="button" class="${n === page ? 'on' : ''}" data-p="${n}"
+      aria-label="Page ${n}"${n === page ? ' aria-current="page"' : ''}>${n}</button>`;
+    last = n;
+  });
+  box.innerHTML = html;
+  box.setAttribute('role', 'navigation'); box.setAttribute('aria-label', 'Pages');
+  box.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
+    go(+b.dataset.p);
+    const top = box.dataset.top && document.getElementById(box.dataset.top);
+    window.scrollTo({ top: top ? top.getBoundingClientRect().top + scrollY - 120 : 0, behavior: 'smooth' });
+  });
+}
+
 
 /* ---------- article bodies ---------- */
 /* The office can now write bold, lists and links in the admin, so a body may be

@@ -6,7 +6,7 @@ const KINDS = [['','Everything'],['news','News'],['guidance','Guidance'],
 const HEADS = { '':'From the institute', news:'News', guidance:'Guidance',
                 event:'Events', video:'Video' };
 
-let all = [], kind = qs('kind') || '';
+let all = [], kind = qs('kind') || '', page = pageNow();
 const out  = document.getElementById('out'),
       feat = document.getElementById('feature'),
       nBox = document.getElementById('n');
@@ -26,9 +26,10 @@ document.getElementById('kinds').innerHTML = KINDS.map(([k,t]) =>
 
 document.getElementById('kinds').onclick = e => {
   const b = e.target.closest('[data-k]'); if (!b) return;
-  kind = b.dataset.k;
+  kind = b.dataset.k; page = 1;
   const u = new URL(location);
   kind ? u.searchParams.set('kind', kind) : u.searchParams.delete('kind');
+  u.searchParams.delete('page');
   history.replaceState(null, '', u);
   draw();
 };
@@ -86,31 +87,43 @@ function draw(){
     b.className = 'btn btn-s btn-g' + (b.dataset.k === kind ? ' on' : ''));
   document.getElementById('head').textContent = HEADS[kind] || 'From the institute';
 
-  const rows = kind === 'event'
+  const all_ = kind === 'event'
     ? orderEvents(all.filter(r => r.kind === 'event'))
     : all.filter(r => !kind || r.kind === kind);
-  nBox.textContent = rows.length ? `${rows.length} item${rows.length === 1 ? '' : 's'}` : '';
+  const pagerBox = document.getElementById('pager');
 
-  if (!rows.length) {
-    feat.innerHTML = '';
+  if (!all_.length) {
+    feat.innerHTML = ''; nBox.textContent = ''; drawPages(pagerBox, 1, 1);
     out.innerHTML = `<div class="state glass"><p>Nothing has been published here yet.</p></div>`;
     return;
   }
 
-  // The newest one is given the room. The rest are rows, which fit far more on a
-  // screen than three cards across and read better against a sidebar.
-  const [first, ...rest] = rows;
+  // Eight to a page (site 90). On the first page the newest is given the room
+  // and seven rows follow; later pages are eight rows and no feature.
+  const pg = pageSlice(all_, page);
+  page = pg.page; keepPage(page);
+  nBox.textContent = pg.pages > 1
+    ? `${pg.from + 1}\u2013${pg.from + pg.rows.length} of ${all_.length} items`
+    : `${all_.length} item${all_.length === 1 ? '' : 's'}`;
+  drawPages(pagerBox, pg.pages, page, n => { page = n; draw(); });
 
-  /* Where the heading goes. `pastFrom` is an index into `rows`, so the heading
-     belongs before `rest[pastFrom - 1]`. When nothing is upcoming it is 0, the
-     feature is itself a previous event, and the heading goes above the feature
-     instead. That case is the one a naive splice would get wrong, and it is the
-     ordinary case for most of the year. */
-  const pastFrom = rows.pastFrom;
-  const headBeforeFeature = pastFrom === 0;
-  const headAtRestIndex   = (pastFrom > 0 && pastFrom <= rest.length) ? pastFrom - 1 : -1;
+  const featured = page === 1;
+  const first = featured ? pg.rows[0] : null;
+  const rest  = featured ? pg.rows.slice(1) : pg.rows;
 
-  feat.innerHTML = (headBeforeFeature ? PAST_HEAD : '') + `
+  /* Where the Previous events heading goes. `pastFrom` is an index into the
+     whole list, so it is first made relative to this page. On the first page a
+     value of 0 means the feature is itself a previous event and the heading goes
+     above it, the case a naive splice gets wrong and the ordinary one for most
+     of the year. On a later page the heading goes before the row it lands on,
+     and on no page at all if the line falls elsewhere. */
+  const local = (all_.pastFrom === undefined ? -1 : all_.pastFrom - pg.from);
+  const headBeforeFeature = featured && local === 0;
+  const headAtRestIndex = featured
+    ? ((local > 0 && local <= rest.length) ? local - 1 : -1)
+    : ((local >= 0 && local < rest.length) ? local : -1);
+
+  feat.innerHTML = !first ? '' : (headBeforeFeature ? PAST_HEAD : '') + `
     <a href="${link(first)}" class="news-feature glass" style="margin-bottom:22px">
       <div class="pic ph" style="background-image:url('${imageFor(first)}')"></div>
       <div class="fbody">

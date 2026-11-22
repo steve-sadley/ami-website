@@ -16,9 +16,17 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
     return;
   }
 
-  const [first, ...rest] = rows;
+  // Eight to a page (site 90): the newest as the featured recording and seven
+  // cards on the first page, eight cards on each page after it.
+  let page = pageNow();
+  const draw = () => {
+  const pg = pageSlice(rows, page);
+  page = pg.page; keepPage(page);
+  const first = page === 1 ? pg.rows[0] : null;
+  const rest = page === 1 ? pg.rows.slice(1) : pg.rows;
+  drawPages(document.getElementById('pager'), pg.pages, page, n => { page = n; draw(); });
 
-  hero.innerHTML = `
+  hero.innerHTML = !first ? '' : `
     <div class="vhero glass" data-vimeo="${esc(first.vimeo_id || '')}" data-title="${esc(first.title)}"
          role="button" tabindex="0">
       <div class="vthumb ph" style="background-image:url('${imageFor(first)}')">
@@ -45,6 +53,9 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
     </div>`).join('')
     : `<div class="state glass" style="grid-column:1/-1">
          <p>This is the only recording published so far.</p></div>`;
+  revealSoon();
+  };
+  draw();
 })();
 
 /* One listener on the document rather than one per card, because the cards are
