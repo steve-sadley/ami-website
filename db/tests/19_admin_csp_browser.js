@@ -120,7 +120,7 @@ Object.defineProperty(window, 'supabase', { configurable: true,
     nav: [...document.querySelectorAll('#nav button')].map(b => b.textContent),
   }));
   ok(shown.app === 'block', 'the app starts under the policy rather than a blank page');
-  ok(shown.ver === 'v51', 'and it is v51, got ' + shown.ver);
+  ok(shown.ver === 'v52', 'and it is v52, got ' + shown.ver);
   ok(shown.nav.length >= 15, `the sidebar is drawn, ${shown.nav.length} screens`);
 
   for (const name of shown.nav) {

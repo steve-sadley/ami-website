@@ -49,7 +49,7 @@ const ROWS = {
     { id:'e2', template_code:'cpd_rejected', route:'Queued by the database', to_email:'jo@test.invalid', to_name:'Jo Bloggs',
       subject:'Your CPD entries have not been accepted', status:'failed', last_error:'SMTP2GO answered 500',
       at:'2026-10-30T09:00:00Z', membership_number:'AMI-0001' } ],
-  email_outbox: [{ id:'e1', html:'<p>Thank you, <b>Eve</b>.</p><img src=x onerror="window.__xss=1"><script>window.__xss=2</script>',
+  email_outbox: [{ id:'e1', html:'<p>Thank you, <b>Eve</b>.</p><p>Pay online= today</p><img src=x onerror="window.__xss=1"><img/onload=window.__xss=4 src=x><script>window.__xss=2</script>',
     reply_to:'info@ami.uk.com' }],
   non_working_days: [{ id:'d1', day:'2027-01-01', name:"New Year Day" }, { id:'d2', day:'2027-05-03', name:'Early May bank holiday' }],
   admin_member_list: [{ id:'m1', given_name:'Jo', family_name:'Bloggs', email:'jo@test.invalid', membership_number:'AMI-0001',
@@ -201,6 +201,7 @@ Object.defineProperty(window, 'supabase', { configurable: true, value: { createC
   ok(/Thank you, Eve\./.test(body.text) && body.b === 1 && /info@ami\.uk\.com/.test(body.text),
      'opening one shows what was sent, and where replies went');
   ok(!body.xss && body.img === 0 && body.script === 0, 'and anything hostile in a logged email stays dead');
+  ok(/Pay online= today/.test(body.text), 'and words that look like a handler are left alone, because only tags are touched');
   await page.evaluate(() => document.getElementById('modal').classList.remove('on'));
 
   await nav('Members');

@@ -17,7 +17,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-MaRJv5W/KKzA2Rlgai3lmMEx0qZnKwgU+TCzZbw+zdM=' 'sha256-QBDl1oIdgcS9mrXb0aOIzFOOAPaoAYwgwhxk6eQL1a4='; worker-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; img-src 'self' data: blob: https://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-MaRJv5W/KKzA2Rlgai3lmMEx0qZnKwgU+TCzZbw+zdM=' 'sha256-sqED3DP/yLqL0NoKTewHcYY97UfGpHb5T/2WW+G/Ps0='; worker-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; img-src 'self' data: blob: https://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'
 
 # THE CONTENT SECURITY POLICY, from admin 18 (30 October 2026).
 #

@@ -474,7 +474,7 @@ const { createClient } = window.supabase;
 
    Bump it on every bundle. A number that lags is worse than none, because it
    answers the question wrongly rather than not at all. */
-const APP_VERSION = 51;
+const APP_VERSION = 52;
 
 /* =====================================================================
    PAGES, the document types
@@ -4666,8 +4666,19 @@ function sanitiseHtml(html, tags){
      sanitiser was executing the thing it existed to remove. A template's
      content is inert: nothing loads and nothing runs. Only the cleaned nodes
      are moved into a real element, after the walk. */
+  /* 22 November 2026, found by test 36: Chrome files a script-src-attr
+     violation the moment HTML carrying an inline handler is PARSED, even into
+     a template that never runs (a DOMParser or a separate document does the
+     same). The policy blocked it and nothing ran, but a report for every
+     hostile email in the log would bury a real one. So, inside tags only and
+     never in the words, an on...= attribute is renamed before parsing. The walk
+     below drops it with every other attribute, as it always did. This is noise
+     reduction, not the defence: a handler that slips past the rename is
+     still removed by the walk and still blocked by the policy. */
+  const quiet = String(html == null ? '' : html)
+    .replace(/<[^>]*>/g, tag => tag.replace(/([\s"'\/])on([a-z]+)(\s*=)/gi, '$1data-off-$2$3'));
   const tpl = document.createElement('template');
-  tpl.innerHTML = String(html == null ? '' : html);
+  tpl.innerHTML = quiet;
   const box = tpl.content;
 
   const walk = node => {
