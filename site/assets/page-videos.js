@@ -7,7 +7,12 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
     .eq('kind', 'video').order('published_at', { ascending:false });
   if (error) return failed(out, error, 'The video library');
 
-  const rows = data || [];
+  /* The list view (public_content) carries no video link; the article view does.
+     Without this every card had an empty link and fell back to the News page,
+     which is what Steve found on 22 November 2026. One more read, joined by slug. */
+  const links = await sb.from('public_article').select('slug,vimeo_id').eq('kind', 'video');
+  const linkOf = new Map((links.data || []).map(r => [r.slug, r.vimeo_id]));
+  const rows = (data || []).map(r => Object.assign({}, r, { vimeo_id: r.vimeo_id || linkOf.get(r.slug) || '' }));
   if (!rows.length) {
     hero.innerHTML = '';
     out.innerHTML = `<div class="state glass" style="grid-column:1/-1">
@@ -27,7 +32,7 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
   drawPages(document.getElementById('pager'), pg.pages, page, n => { page = n; draw(); });
 
   hero.innerHTML = !first ? '' : `
-    <div class="vhero glass" data-vimeo="${esc(first.vimeo_id || '')}" data-title="${esc(first.title)}"
+    <div class="vhero glass" data-vimeo="${esc(first.vimeo_id || '')}" data-slug="${esc(first.slug)}" data-title="${esc(first.title)}"
          role="button" tabindex="0">
       <div class="vthumb ph" style="background-image:url('${imageFor(first)}')">
         <div class="playbtn"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
@@ -41,7 +46,7 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
     </div>`;
 
   out.innerHTML = rest.length ? rest.map(r => `
-    <div class="vcard glass" data-vimeo="${esc(r.vimeo_id || '')}" data-title="${esc(r.title)}"
+    <div class="vcard glass" data-vimeo="${esc(r.vimeo_id || '')}" data-slug="${esc(r.slug)}" data-title="${esc(r.title)}"
          role="button" tabindex="0">
       <div class="vthumb ph" style="background-image:url('${imageFor(r)}')">
         <div class="playbtn sm"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></div>
@@ -68,7 +73,9 @@ function open_(el){
   // recording with nothing playable has nothing to show. Sending somebody to an
   // empty player is worse than saying so.
   const src = videoEmbed(el.dataset.vimeo, true);
-  if (!src) { location.href = '/news?kind=video'; return; }
+  // Nothing playable here: the recording's own page says why, rather than
+  // dropping the visitor on a list.
+  if (!src) { location.href = '/article?kind=video&slug=' + encodeURIComponent(el.dataset.slug || ''); return; }
   frame.src = src;
   frame.title = el.dataset.title || 'AMI video';
   modal.classList.add('open');

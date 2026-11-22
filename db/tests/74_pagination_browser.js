@@ -87,7 +87,10 @@ const MANY = Array.from({ length: 80 }, (_, i) => item(300 + i));
   const news = page => page.evaluate(() => ({ feat: !!document.querySelector('#feature .news-feature'),
     rows: document.querySelectorAll('#out > a').length, head: [...document.querySelectorAll('#out > *')].findIndex(e => /Previous events/.test(e.textContent) && e.tagName !== 'A'),
     titles: [...document.querySelectorAll('#out > a h3, #out > a h4')].map(h => h.textContent), n: document.getElementById('n').textContent }));
-  const SEARCH = u => u.includes('public_content') ? (u.includes('kind=eq.video') ? VIDEOS : NEWS.concat(EVENTS)) : [];
+  // As the real views are: the list view has no video link, the article view has.
+  const SEARCH = u => u.includes('public_content')
+    ? (u.includes('kind=eq.video') ? VIDEOS.map(({ vimeo_id, ...r }) => r) : NEWS.concat(EVENTS))
+    : u.includes('public_article') ? VIDEOS.map(r => ({ slug: r.slug, vimeo_id: r.vimeo_id })) : [];
 
   // news: 36 items, five pages
   let page = await open('/news', SEARCH);
