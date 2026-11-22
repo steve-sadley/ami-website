@@ -181,3 +181,7 @@ Register on Zoom: https://us02web.zoom.us/meeting/register/YXUVAGcrRu6WqNQmhkNgv
   false, 'published', timestamp '2026-10-23 12:00' at time zone 'Europe/London', now())
 on conflict (slug) do nothing;
 commit;
+-- Video pictures (22 November 2026). The old site had none; the videos were text links.
+-- Each YouTube recording's own thumbnail is the AMI title card, so that card is saved onto
+-- the site once and every recording uses it, the four Vimeo ones included. Steve's choice.
+update public.videos set image_path = '/assets/video-title-card.webp' where image_path is null;
