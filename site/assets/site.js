@@ -34,18 +34,12 @@ Object.defineProperty(window, 'sb', {
 });
 
 /* ---------- the background ---------- */
-// A fine mesh, then three drifting blobs, behind a moving gradient. Decoration,
-// and marked as such so a screen reader walks straight past it.
-//
-// The mesh is first in the order on purpose. It is what the glass panels
-// refract: without something structured behind them a backdrop blur has nothing
-// to work on and the panels read as flat grey. The blobs sit over it and soften
-// it where they overlap.
+// A flat graphite field with a fine mesh in the top left, nothing moving.
+// Decoration, and marked as such so a screen reader walks straight past it.
+// The mesh is what the glass panels blur, which is why they still read as glass.
 function buildBackground(){
   document.body.insertAdjacentHTML('afterbegin',
-    '<div class="bg" aria-hidden="true"><div class="mesh"></div>'
-    + '<div class="blob b1"></div>'
-    + '<div class="blob b2"></div><div class="blob b3"></div></div>');
+    '<div class="bg" aria-hidden="true"><div class="mesh"></div></div>');
 }
 
 /* ---------- navigation ---------- */

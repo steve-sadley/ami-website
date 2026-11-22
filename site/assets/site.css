@@ -11,8 +11,8 @@
 /* =============================================================================
    AMI public site
 
-   The design system from the agreed prototype: the moving aurora background,
-   the drifting blobs, the glass panels, the white logo card beside a floating
+   The design system from the agreed prototype: a flat graphite background with
+   a fine mesh in the top left, the glass panels, the white logo card beside a floating
    navigation pill, and the white on red button pair.
 
    Everything here comes from the prototype. What has been added is the handful
@@ -36,17 +36,7 @@
    every page is the only version of this that stays right. */
 :root{
   --body:#0f1116; --txt:#fff; --muted:#b6bdc7; --eyebrow:#ff7a82;
-  --bg-grad:linear-gradient(135deg,#0d0f13,#171b22,#0f1217,#1c212a,#0d0f13);
-  /* The blobs are the only thing behind a panel worth blurring, so they are
-     kept tighter than they once were. At a 90 pixel blur the field was already
-     so soft that blurring it again through a panel changed nothing, and the
-     glass came out looking like flat grey paint. Half that blur, further apart
-     in tone, and light and shade now travel across the page. */
-  --blob1:#38414f;      /* slate, lighter, top right   */
-  --blob2:#171c24;      /* slate, deeper, mid left     */
-  --blob3:#454f5e;      /* slate, softest, low right   */
-  --blobblur:50px;
-  --blobop:.68; --blob2op:.6; --blob3op:.55;
+  --bg-flat:#15181e;
   /* The mesh. Barely visible in clear air, and the thing a panel is actually
      refracting. See the .mesh rule below. */
   --mesh-op:.09;
@@ -83,29 +73,20 @@ img{display:block;max-width:100%}
 .wrap{max-width:min(1680px, 94vw);margin:0 auto;padding:0 clamp(18px,3vw,44px);
   position:relative;z-index:2}
 
-/* ---------- the background ---------- */
-.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg-grad);
-  background-size:300% 300%;animation:aurora 22s ease infinite}
-@keyframes aurora{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-/* A fine slate mesh across the field, masked to fade out towards the edges. It
-   is almost invisible where nothing covers it. Behind a panel the blur smears
-   it into a soft glow, and that difference between covered and uncovered is
-   what the eye reads as thickness. It is a gradient rather than a picture, so
-   it costs no request and around 300 bytes. It sits below the blobs on purpose,
-   so a blob softens it where the two overlap. */
+/* ---------- the background ----------
+   One flat graphite colour, nothing moving. Steve, 22 November 2026: the drifting
+   spotlights and the shifting gradient were not adding anything, so they went,
+   and the only thing left on the field is the fine mesh in the top left corner.
+   The glass panels still read as glass because the mesh is what they blur. */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg-flat)}
+/* A fine slate mesh, masked so it shows in the top left and fades out towards the
+   rest of the page. A gradient rather than a picture, so it costs no request. */
 .mesh{position:absolute;inset:-40%;opacity:var(--mesh-op);transform:rotate(-14deg);
   background:
     repeating-linear-gradient(0deg,rgba(190,205,225,.55) 0 1px,transparent 1px 46px),
     repeating-linear-gradient(90deg,rgba(190,205,225,.55) 0 1px,transparent 1px 46px);
   -webkit-mask-image:radial-gradient(70% 60% at 32% 26%,#000,transparent 78%);
   mask-image:radial-gradient(70% 60% at 32% 26%,#000,transparent 78%)}
-.blob{position:absolute;border-radius:50%;filter:blur(var(--blobblur))}
-.b1{width:700px;height:700px;background:var(--blob1);opacity:var(--blobop);top:-280px;right:-180px;animation:f1 16s ease-in-out infinite}
-.b2{width:620px;height:620px;background:var(--blob2);opacity:var(--blob2op);top:30%;left:-180px;animation:f2 19s ease-in-out infinite}
-.b3{width:520px;height:520px;background:var(--blob3);opacity:var(--blob3op);top:72%;right:12%;animation:f1 13s ease-in-out infinite}
-@keyframes f1{50%{transform:translate(60px,70px) scale(1.08)}}
-@keyframes f2{50%{transform:translate(-70px,-50px) scale(1.05)}}
-@media (prefers-reduced-motion: reduce){.bg{animation:none}.blob{animation:none !important}}
 
 /* ---------- glass ---------- */
 /* The sheen is a background LAYER rather than a pseudo element, deliberately.
