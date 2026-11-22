@@ -1,0 +1,14 @@
+# The ami-dynamics-sync Worker, deployed by .github/workflows/deploy.yml on
+# every push to main that changes this folder.
+#
+# Taken from the Worker as it ran in Cloudflare on 22 November 2026.
+#
+# Deliberately NOT here:
+#   [triggers]   the schedule stays as set in the dashboard. Cloudflare leaves
+#                existing cron triggers in place when this file names none; an
+#                empty list would REMOVE them.
+#   secrets      the seven secrets stay in the dashboard and are never in this
+#                repository. A deploy keeps them.
+name = "ami-dynamics-sync"
+main = "worker.js"
+compatibility_date = "2026-10-31"

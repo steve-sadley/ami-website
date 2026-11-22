@@ -8,7 +8,7 @@ site/            the public site and members area, Cloudflare Pages project ami-
                  site/_worker.js is the site's Worker and deploys with it
 admin/           the admin app, one HTML file, Cloudflare Pages project ami-admin
 db/              Supabase migrations, seeds, tools and every test suite
-dynamics-sync/   the ami-dynamics-sync Worker (to be added)
+dynamics-sync/   the ami-dynamics-sync Worker, deployed with wrangler (schedule and secrets stay in the dashboard)
 ```
 
 ## Deploying
