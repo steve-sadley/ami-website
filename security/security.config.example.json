@@ -1,0 +1,13 @@
+{
+  "siteUrl": "https://staging.ami.uk.com",
+  "adminUrl": "https://admin-staging.ami.uk.com",
+  "supabaseUrl": "https://ttjvwxxtoidiiejyqmbc.supabase.co",
+  "supabaseAnon": "sb_publishable_...",
+  "syncUrl": "https://ami-dynamics-sync.YOUR-ACCOUNT.workers.dev",
+  "memberEmail": "steve.sadley+amitest@arca.org.uk",
+  "memberPassword": "",
+  "staffEmail": "steve.sadley+amistaff@arca.org.uk",
+  "staffPassword": "",
+  "anthropicKey": "",
+  "agentModel": "claude-sonnet-5-5"
+}
