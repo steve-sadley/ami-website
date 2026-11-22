@@ -22,7 +22,7 @@
 //                 through the site, carrying the staff member's own sign in,
 //                 and the database decides whether they may (dynamics_sync_request).
 //
-// Cron trigger to set in the dashboard:  20 7,12,17 * * 1-5
+// Cron trigger, set in wrangler.toml:  20 7,12,17 * * MON-FRI
 //   (UTC, so 08:20, 13:20 and 18:20 in summer and an hour earlier in winter)
 //
 // Secrets (Settings, Variables and Secrets, type Secret). NEVER paste one into chat.
