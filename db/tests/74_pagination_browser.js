@@ -137,7 +137,7 @@ const MANY = Array.from({ length: 80 }, (_, i) => item(300 + i));
   await go(page, 2); vv = await v();
   ok(!vv.hero && vv.cards === 2, 'page two is the last two, with no feature');
   await page.click('#out .vcard'); await page.waitForTimeout(250);
-  ok(await page.evaluate(() => /player\.vimeo\.com\/video\/12345678/.test((document.querySelector('iframe') || {}).src || '')), 'a card on page two still plays');
+  ok(await page.evaluate(() => /player\.vimeo\.com\/video\/123456710(\?|$)/.test((document.querySelector('iframe') || {}).src || '')), 'a card on page two still plays');
   ok(await clean(page), 'videos raise no error and no policy violation');
   await page.close();
 
