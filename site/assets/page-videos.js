@@ -21,14 +21,15 @@ const hero = document.getElementById('hero'), out = document.getElementById('out
     return;
   }
 
-  // Eight to a page (site 90): the newest as the featured recording and seven
-  // cards on the first page, eight cards on each page after it.
+  // The grid is three across, so it pages in nines: three full rows (Steve,
+  // 22 November 2026, after eight left a gap). The newest is the featured
+  // recording above the grid on the first page and is not counted in the nine.
   let page = pageNow();
   const draw = () => {
-  const pg = pageSlice(rows, page);
+  const pg = pageSlice(rows.slice(1), page, 9);
   page = pg.page; keepPage(page);
-  const first = page === 1 ? pg.rows[0] : null;
-  const rest = page === 1 ? pg.rows.slice(1) : pg.rows;
+  const first = page === 1 ? rows[0] : null;
+  const rest = pg.rows;
   drawPages(document.getElementById('pager'), pg.pages, page, n => { page = n; draw(); });
 
   hero.innerHTML = !first ? '' : `

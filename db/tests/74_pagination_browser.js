@@ -58,7 +58,7 @@ const NEWS = Array.from({ length: 20 }, (_, i) => item(i + 1));
 // Ten upcoming, six past: the Previous events line falls on the second page.
 const EVENTS = Array.from({ length: 16 }, (_, i) => item(100 + i, { kind: 'event',
   starts_at: new Date(NOW + (i < 10 ? (i + 1) : -(i - 9)) * DAY).toISOString() }));
-const VIDEOS = Array.from({ length: 9 }, (_, i) => item(200 + i, { kind: 'video', vimeo_id: '1234567' + i }));
+const VIDEOS = Array.from({ length: 12 }, (_, i) => item(200 + i, { kind: 'video', vimeo_id: '1234567' + i }));
 const GUIDES = Array.from({ length: 17 }, (_, i) => ({ slug: 'g' + i, title: (i === 16 ? 'Needle ' : 'Guide ') + i,
   category: i % 2 ? 'Removal' : 'Surveying', summary: 's', published_at: new Date(NOW - i * DAY).toISOString(),
   members_only: false, has_document: true, file_type: 'pdf', file_size: 1000 }));
@@ -133,9 +133,9 @@ const MANY = Array.from({ length: 80 }, (_, i) => item(300 + i));
   page = await open('/videos', SEARCH);
   const v = () => page.evaluate(() => ({ hero: !!document.querySelector('#hero .vhero'), cards: document.querySelectorAll('#out .vcard').length }));
   let vv = await v();
-  ok(vv.hero && vv.cards === 7 && await pager(page) === '1* 2', 'videos page one is the featured recording and seven cards: ' + JSON.stringify(vv));
+  ok(vv.hero && vv.cards === 9 && await pager(page) === '1* 2', 'videos page one is the featured recording and three rows of three: ' + JSON.stringify(vv));
   await go(page, 2); vv = await v();
-  ok(!vv.hero && vv.cards === 1, 'page two is the ninth, with no feature');
+  ok(!vv.hero && vv.cards === 2, 'page two is the last two, with no feature');
   await page.click('#out .vcard'); await page.waitForTimeout(250);
   ok(await page.evaluate(() => /player\.vimeo\.com\/video\/12345678/.test((document.querySelector('iframe') || {}).src || '')), 'a card on page two still plays');
   ok(await clean(page), 'videos raise no error and no policy violation');
