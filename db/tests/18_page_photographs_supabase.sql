@@ -65,16 +65,16 @@ select lives_ok($$ insert into public.page_blocks (page_key, block_key, body, st
 
 -- The seed, by shape rather than by value.
 select is((select count(*)::int from public.page_blocks
-            where block_key like '%\_photo' and page_key not like 'zz-%'), 17,
-          'seventeen page photographs are seeded (0065 added three banners, 0069 the rules)');
+            where block_key like '%\_photo' and page_key not like 'zz-%'), 18,
+          'eighteen page photographs are seeded (0065 added three banners, 0069 and 0070 one each)');
 select is((select count(*)::int from public.page_blocks
             where block_key like '%\_photo' and page_key not like 'zz-%'
               and body !~ '^/assets/[a-z0-9-]+\.webp$'), 0,
           'every seeded photograph starts as one of the bundle''s own');
 
 set local role anon;
-select is((select count(*)::int from public.public_page where block_key like '%\_photo'), 17,
-          'an anonymous visitor can read all seventeen');
+select is((select count(*)::int from public.public_page where block_key like '%\_photo'), 18,
+          'an anonymous visitor can read all eighteen');
 reset role;
 
 -- -----------------------------------------------------------------------------

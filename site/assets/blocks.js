@@ -195,6 +195,21 @@ const BLOCK_MAP = {
     "cta_body": [".cta p", "prose"],
     "cta_link": [".cta a.btn", "links"]
   },
+  "resources": {
+    "banner_photo": [".pbanner.img", "image"],
+    "banner_heading": [".pbanner h1", "line"],
+    "banner_lede": [".pbanner p", "rich"],
+    "hse_heading": ["#hse h3", "line"],
+    "hse": ["#hse .rich", "rich"],
+    "network_heading": ["#network h3", "line"],
+    "network": ["#network .rich", "rich"],
+    "forms_heading": ["#forms h3", "line"],
+    "forms": ["#forms .rich", "rich"],
+    "links_heading": ["#links h3", "line"],
+    "links": ["#links .rich", "rich"],
+    "hr_heading": ["#hr h3", "line"],
+    "hr": ["#hr .rich", "rich"]
+  },
   "committees": {
     "banner_photo": [".pbanner.img", "image"],
     "banner_heading": [".pbanner h1", "line"],

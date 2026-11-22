@@ -114,6 +114,7 @@ function buildFooter(signedIn){
           <h4>Support and guidance</h4>
           <a href="/support">Guidance and resources</a>
           <a href="/cpd-scheme">Continuing development</a>
+          <a href="/resources">Publications and useful links</a>
           <a href="/guidance">Guidance documents</a>
           <a href="/videos">Webinars and AGM</a>
           <a href="${forumHref}">Members forum</a>
@@ -751,7 +752,11 @@ function fillFaq(el, it, i, firstOpen){
    from youtube-nocookie.com, which sets no tracking cookies until play. */
 function videoEmbed(raw, autoplay){
   const s = String(raw || '').trim();
-  let m = s.match(/^(?:https?:\/\/)?(?:www\.|player\.)?vimeo\.com\/(?:video\/)?(\d{6,12})(?:[/?#]|$)/i) || s.match(/^(\d{6,12})$/);
+  // An unlisted Vimeo video has a second part to its address, vimeo.com/<id>/<code>,
+  // and the player refuses it without that code, passed as h=.
+  let m = s.match(/^(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d{6,12})\/([0-9a-f]{6,20})(?:[/?#]|$)/i);
+  if (m) return 'https://player.vimeo.com/video/' + m[1] + '?h=' + m[2] + (autoplay ? '&autoplay=1' : '');
+  m = s.match(/^(?:https?:\/\/)?(?:www\.|player\.)?vimeo\.com\/(?:video\/)?(\d{6,12})(?:[/?#]|$)/i) || s.match(/^(\d{6,12})$/);
   if (m) return 'https://player.vimeo.com/video/' + m[1] + (autoplay ? '?autoplay=1' : '');
   m = s.match(/^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?:[&?#/]|$)/i)
    || s.match(/^([A-Za-z0-9_-]{11})$/);

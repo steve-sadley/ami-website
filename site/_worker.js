@@ -73,6 +73,75 @@ function plainTextHeaders(extra){
   }, extra || {});
 }
 
+// Every address on the old ami.uk.com that has a home on the new site (22
+// November 2026), so links in old emails, search results and bookmarks land in
+// the right place at cutover rather than on a 404. News stories got cleaner
+// addresses on the way across, so each is listed. Lower case, no trailing slash.
+const OLD_SITE = {
+  "/about-us": "/about",
+  "/account": "/login",
+  "/contact-us": "/contact",
+  "/events": "/news?kind=event",
+  "/gdpr-privacy-and-cookies-policy": "/privacy",
+  "/join-us": "/membership#join",
+  "/membership/categories": "/membership#grades",
+  "/membership/cpd-scheme": "/cpd-scheme",
+  "/membership/members": "/register",
+  "/news/archive": "/news",
+  "/news/archive/amended-personal-protective-equipment-at-work-regulations": "/article?kind=news&slug=amended-personal-protective-equipment-at-work-regulations",
+  "/news/archive/ami-1st": "/article?kind=news&slug=ami-1st-annual-general-meeting",
+  "/news/archive/ami-2nd-annual-general-meeting": "/article?kind=news&slug=ami-2nd-annual-general-meeting",
+  "/news/archive/ami-3rd-annual-general-meeting": "/article?kind=news&slug=ami-3rd-annual-general-meeting",
+  "/news/archive/ami-launches-discussion-forum-for-members": "/article?kind=news&slug=ami-launches-discussion-forum-for-members",
+  "/news/archive/ami-publishes-guidance-on-competency-within-the-asbestos-removal-industry": "/article?kind=news&slug=the-institute-publishes-guidance-on-competency-within-the-asbestos-rem",
+  "/news/archive/ami-seminar-discussing-latest-eu-asbestos-safety-standards": "/article?kind=news&slug=ami-seminar-discussing-latest-eu-asbestos-safety-standards",
+  "/news/archive/amis-3rd-annual-general-meeting-recapnew-blog-post": "/article?kind=news&slug=amis-3rd-annual-general-meeting-recap",
+  "/news/archive/amiseminar": "/article?kind=news&slug=free-asbestos-best-practice-seminar-for-asbestos-professionals",
+  "/news/archive/asbestos-management-institute-ami-update": "/article?kind=news&slug=armi-update-march-2021",
+  "/news/archive/asbestos-management-institute-celebrates-milestone-growth-with-100-members": "/article?kind=news&slug=asbestos-management-institute-celebrates-milestone-growth-with-100-mem",
+  "/news/archive/asbestos-management-institute-celebrates-successful-fourth-annual-general-meeting": "/article?kind=news&slug=asbestos-management-institute-celebrates-successful-fourth-annual-gene",
+  "/news/archive/asbestos-management-seminar-expert-insights-and-best-practices": "/article?kind=news&slug=asbestos-management-seminar-expert-insights-and-best-practices",
+  "/news/archive/asbestos-management-seminar-recap-a-day-of-critical-insights-and-expert-knowledge": "/article?kind=news&slug=asbestos-management-seminar-recap-a-day-of-critical-insights-and-exper",
+  "/news/archive/atac-and-ami-launch-joint-membership-initiative-to-enhance-asbestos-professional-recognition": "/article?kind=news&slug=atac-and-ami-launch-joint-membership-initiative-to-enhance-asbestos-pr",
+  "/news/archive/celebrating-success-highlights-from-the-second-annual-general-meeting-of-ami": "/article?kind=news&slug=celebrating-success-highlights-from-the-second-annual-general-meeting",
+  "/news/archive/expert-led-asbestos-management-seminar-successfully-brings-together-industry-professionalsnew-blog-post": "/article?kind=news&slug=expert-led-asbestos-management-seminar-successfully-brings-together-in",
+  "/news/archive/first-annual-general-meeting-for-ami-a-resounding-success": "/article?kind=news&slug=first-annual-general-meeting-for-ami-a-resounding-success",
+  "/news/archive/free-online-ami-seminar-regulation-the-law-and-our-asbestos-legacy": "/article?kind=news&slug=free-online-ami-seminar-regulation-the-law-and-our-asbestos-legacy",
+  "/news/archive/hse-and-ukas-discuss-the-analysts-guide": "/article?kind=news&slug=hse-and-ukas-discuss-the-analysts-guide",
+  "/news/archive/hse-publish-asbestos-exposures-to-workers-in-the-licensed-asbestos-removal-industry-research-report": "/article?kind=news&slug=hse-publish-asbestos-exposures-to-workers-in-the-licensed-asbestos-rem",
+  "/news/archive/hse-publishes-the-analysts-guide": "/article?kind=news&slug=hse-publishes-the-analysts-guide",
+  "/news/archive/institute-to-hold-inaugural-member-meeting": "/article?kind=news&slug=institute-to-hold-inaugural-member-meeting",
+  "/news/archive/management-of-asbestos-in-school-buildings-202223": "/article?kind=news&slug=management-of-asbestos-in-school-buildings-2022-23",
+  "/news/archive/new-ami-skills-card-for-professionally-qualified-person": "/article?kind=news&slug=new-ami-skills-card-for-professionally-qualified-person",
+  "/news/archive/new-asbestos-guidance-documents-released-by-industry-working-group": "/article?kind=news&slug=new-asbestos-guidance-documents-released-by-industry-working-group",
+  "/news/archive/new-blog-institute-committees": "/article?kind=news&slug=institute-committees",
+  "/news/archive/new-blog-post-4": "/article?kind=news&slug=free-expert-led-asbestos-management-seminar-for-asbestos-professionals",
+  "/news/archive/new-cscs-smart-check-app-available": "/article?kind=news&slug=new-cscs-smart-check-app-available",
+  "/news/archive/parliamentary-launch-of-asbestos-information-cics-national-strategy-report": "/article?kind=news&slug=parliamentary-launch-of-asbestos-information-cics-national-strategy-re",
+  "/news/archive/remote-training-for-surveyors-and-analysts": "/article?kind=news&slug=changes-to-the-personal-protective-equipment-at-work-regulations-1992",
+  "/news/archive/removing-asbestos-from-schools-and-hospitals-would-benefit-uk-economy-by-almost-12-billion-over-50-years-says-new-report": "/article?kind=news&slug=removing-asbestos-from-schools-and-hospitals-would-benefit-uk-economy",
+  "/news/archive/report-published-by-parliamentary-work-and-pensions-committee-on-hses-approach-to-asbestos-management": "/article?kind=news&slug=report-published-by-parliamentary-work-and-pensions-committee-on-hses",
+  "/news/archive/resounding-success-at-the-asbestos-best-practice-seminar": "/article?kind=news&slug=resounding-success-at-the-asbestos-best-practice-seminar",
+  "/news/archive/site-operating-procedures-for-managers": "/article?kind=news&slug=site-operating-procedures-v7-available",
+  "/news/archive/the-institute-for-asbestos-management-professionals": "/article?kind=news&slug=the-institute-for-asbestos-management-professionals",
+  "/news/archive/two-institute-sub-committees-formed": "/article?kind=news&slug=two-institute-sub-committees-formed",
+  "/news/latest": "/news",
+  "/support/ami-2nd-agm-videos-18th-april-2": "/videos",
+  "/support/ami-2nd-agm-videos-18th-april-2024": "/videos",
+  "/support/ami-guidance-notes": "/guidance",
+  "/support/ami-webinar-video-links": "/videos",
+  "/support/ami-webinar-video-links-2": "/videos",
+  "/support/ami-webinar-video-links-3": "/videos",
+  "/support/ami-webinar-video-links-4": "/videos",
+  "/support/amiagm2026": "/videos",
+  "/support/asbestos-network-information": "/resources",
+  "/support/atac-personal-monitoring-requisition-excel-form": "/resources",
+  "/support/discussion-forum": "/forum",
+  "/support/hr-support": "/resources",
+  "/support/hse-publications": "/resources",
+  "/support/useful-links": "/resources"
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -238,8 +307,8 @@ export default {
 
     // The old site's two membership pages moved to the top level (site 83).
     // Permanent, so search engines and old bookmarks follow them.
-    const moved = { '/membership/professional-conduct': '/professional-conduct',
-                    '/membership/committees': '/committees' }[url.pathname.replace(/\/+$/, '')];
+    const moved = ({ '/membership/professional-conduct': '/professional-conduct',
+                     '/membership/committees': '/committees', ...OLD_SITE })[url.pathname.replace(/\/+$/, '').toLowerCase()];
     if (moved) return Response.redirect(url.origin + moved, 301);
 
     // The photograph on a public member page. A GET, so an <img> can point at it.

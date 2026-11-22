@@ -438,6 +438,21 @@ MAP = {
     ('cta_body',         'prose', '.cta p'),
     ('cta_link',         'links', '.cta a.btn'),
  ]),
+ 'resources.html': ('resources', [
+    ('banner_photo',     'image', '.pbanner.img'),
+    ('banner_heading',   'line',  '.pbanner h1'),
+    ('banner_lede',      'rich',  '.pbanner p'),
+    ('hse_heading',      'line',  '#hse h3'),
+    ('hse',              'rich',  '#hse .rich'),
+    ('network_heading',  'line',  '#network h3'),
+    ('network',          'rich',  '#network .rich'),
+    ('forms_heading',    'line',  '#forms h3'),
+    ('forms',            'rich',  '#forms .rich'),
+    ('links_heading',    'line',  '#links h3'),
+    ('links',            'rich',  '#links .rich'),
+    ('hr_heading',       'line',  '#hr h3'),
+    ('hr',               'rich',  '#hr .rich'),
+ ]),
  'committees.html': ('committees', [
     ('banner_photo',     'image', '.pbanner.img'),
     ('banner_heading',   'line',  '.pbanner h1'),
@@ -521,6 +536,11 @@ LABELS = {
     'events_heading': 'Events panel heading', 'events_sub': 'Events panel subheading',
     'all_eyebrow': 'Recordings eyebrow', 'all_heading': 'Recordings heading',
     'notify_heading': 'Telling AMI heading', 'notify': 'Telling AMI bullets',
+    'hse_heading': 'HSE publications heading', 'hse': 'HSE publications',
+    'network_heading': 'Asbestos Network heading', 'network': 'Asbestos Network appendices',
+    'forms_heading': 'Forms heading', 'forms': 'Forms',
+    'links_heading': 'Useful links heading', 'links': 'Useful links',
+    'hr_heading': 'HR support heading', 'hr': 'HR support',
     'rules_heading': 'Rules heading', 'rules': 'The rules (full text)',
     'rules_pdf': 'Download button (the PDF of the rules)',
     'intro_eyebrow': 'Opening eyebrow', 'intro_lede': 'Opening text',
@@ -535,7 +555,7 @@ PAGE_TITLES = {
     'support': 'Support and guidance', 'contact': 'Contact',
     'apply': 'Apply for membership', 'news': 'News and events',
     'videos': 'Video library', 'register': 'Members register',
-    'professional-conduct': 'Professional conduct', 'rules': 'Rules of membership', 'committees': 'Committees',
+    'professional-conduct': 'Professional conduct', 'rules': 'Rules of membership', 'resources': 'Publications and useful links', 'committees': 'Committees',
     'guidance': 'Guidance documents',
 }
 PAGE_PATHS = {
@@ -543,7 +563,7 @@ PAGE_PATHS = {
     'cpd-scheme': '/cpd-scheme', 'cscs-cards': '/cscs-cards',
     'support': '/support', 'contact': '/contact', 'apply': '/apply',
     'news': '/news', 'videos': '/videos', 'register': '/register',
-    'professional-conduct': '/professional-conduct', 'rules': '/rules', 'committees': '/committees',
+    'professional-conduct': '/professional-conduct', 'rules': '/rules', 'resources': '/resources', 'committees': '/committees',
     'guidance': '/guidance',
 }
 

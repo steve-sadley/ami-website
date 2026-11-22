@@ -49,7 +49,7 @@ const SEED = (() => {
   // 0035 seeded the first eleven pages; 0065 seeded professional conduct,
   // committees, guidance and the membership page's standards cards.
   // 0069 the rules of membership, and the third Standards card on Membership.
-  const mig = ['0035_page_copy_is_content.sql', '0065_media_documents_and_pages.sql', '0069_rules_page.sql']
+  const mig = ['0035_page_copy_is_content.sql', '0065_media_documents_and_pages.sql', '0069_rules_page.sql', '0070_resources_page.sql']
     .map(f => fs.readFileSync(path.resolve(__dirname, '../supabase/migrations/' + f), 'utf8')).join('\n');
   const out = {};
   const re = /\('([^']+)', '([^']+)', null, '((?:[^']|'')*)'::jsonb/g;

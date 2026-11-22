@@ -117,7 +117,7 @@ select cmp_ok(
 select is(
   (select count(distinct page_key) from public.page_blocks
     where page_key not like 'zz-%'),
-  15::bigint, 'fifteen pages have blocks (0065 added professional conduct, committees and guidance, 0069 the rules), and the privacy notice is not one of them');
+  16::bigint, 'sixteen pages have blocks (0065 added professional conduct, committees and guidance, 0069 the rules, 0070 resources), and the privacy notice is not one of them');
 
 select is(
   (select count(*) from public.page_blocks where page_key = 'privacy'),
@@ -172,10 +172,11 @@ select is(
   'document', 'an icon is a NAME from a set, not markup somebody typed');
 
 select is(
-  (select items -> 1 ->> 'href' from public.page_blocks
-    where page_key = 'support' and block_key = 'resources'),
-  'https://www.hse.gov.uk/asbestos/',
+  (select items -> 2 ->> 'href' from public.page_blocks
+    where page_key = 'cscs-cards' and block_key = 'cards'),
+  'https://www.atac.org.uk/asbestos-testing-consultancy-association-cscs-cards',
   'a card that leaves the site keeps its address, and the site works out the rest');
+-- (The Support page's HSE card used to be the example; since 0070 it leads to /resources.)
 
 -- -----------------------------------------------------------------------------
 -- The seed is idempotent

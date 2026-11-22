@@ -495,6 +495,14 @@ footer .flogo img{height:38px;width:auto}
    column. Section headings stand clear, lists read as lists, the mission and
    vision statements sit as quotes, and the summary box stays in view while the
    reader scrolls the rules beside it. */
+/* Publications and useful links (site 88): five panels of links, two across,
+   the fifth (HR support) running the full width. */
+.resources .res{padding:clamp(24px,2.4vw,34px)}
+.resources .res h3{font-size:20px;font-weight:800;margin-bottom:12px}
+.resources .res p{font-size:15.5px;color:var(--muted);margin-bottom:12px}
+.resources .res ul{margin:0 0 12px 20px;color:var(--muted);font-size:15.5px;line-height:1.65}
+.resources .res li{margin-bottom:6px}
+.resources .res strong{color:#fff}
 .intro.rules h3{font-size:20px;font-weight:800;margin:34px 0 12px}
 .intro.rules h3:first-child{margin-top:4px}
 .intro.rules ul{margin:-4px 0 18px 22px;color:var(--muted);font-size:16px;line-height:1.7}

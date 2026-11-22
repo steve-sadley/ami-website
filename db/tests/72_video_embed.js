@@ -29,10 +29,14 @@ for (const [input, want] of [
   ['https://vimeo.com/123456789', VM],
   ['vimeo.com/123456789?share=copy', VM],
   ['https://player.vimeo.com/video/123456789', VM],
+  // unlisted Vimeo, as the November 2023 webinar recordings are
+  ['https://vimeo.com/886369969/397afd4730', 'https://player.vimeo.com/video/886369969?h=397afd4730'],
+  ['https://vimeo.com/886369969/397afd4730?share=copy', 'https://player.vimeo.com/video/886369969?h=397afd4730'],
 ]) ok(videoEmbed(input) === want, `${input.trim()} plays, got ${videoEmbed(input)}`);
 
 ok(videoEmbed('youtu.be/Sv42d-UJy6U', true) === YT + '&autoplay=1', 'autoplay is added for the library overlay (YouTube)');
 ok(videoEmbed('123456789', true) === VM + '?autoplay=1', 'and for Vimeo');
+ok(videoEmbed('vimeo.com/886369969/397afd4730', true) === 'https://player.vimeo.com/video/886369969?h=397afd4730&autoplay=1', 'and for unlisted Vimeo, code kept');
 
 for (const bad of ['', null, 'https://evil.example/embed/Sv42d-UJy6U', 'javascript:alert(1)',
                    'https://www.youtube.com.evil.example/watch?v=Sv42d-UJy6U', 'youtube.com/watch?v=short',

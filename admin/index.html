@@ -474,7 +474,7 @@ const { createClient } = window.supabase;
 
    Bump it on every bundle. A number that lags is worse than none, because it
    answers the question wrongly rather than not at all. */
-const APP_VERSION = 50;
+const APP_VERSION = 51;
 
 /* =====================================================================
    PAGES, the document types
@@ -699,6 +699,21 @@ const PAGES = [
     { k: "cta_heading", label: "Red panel heading", kind: "line" },
     { k: "cta_body", label: "Red panel text", kind: "prose" },
     { k: "cta_link", label: "Red panel button", kind: "links" },
+  ] },
+  { key: "resources", title: "Publications and useful links", path: "/resources", fields: [
+    { k: "banner_photo", label: "Banner photograph", kind: "image" },
+    { k: "banner_heading", label: "Banner heading", kind: "line" },
+    { k: "banner_lede", label: "Banner text", kind: "rich" },
+    { k: "hse_heading", label: "HSE publications heading", kind: "line" },
+    { k: "hse", label: "HSE publications", kind: "rich" },
+    { k: "network_heading", label: "Asbestos Network heading", kind: "line" },
+    { k: "network", label: "Asbestos Network appendices", kind: "rich" },
+    { k: "forms_heading", label: "Forms heading", kind: "line" },
+    { k: "forms", label: "Forms", kind: "rich" },
+    { k: "links_heading", label: "Useful links heading", kind: "line" },
+    { k: "links", label: "Useful links", kind: "rich" },
+    { k: "hr_heading", label: "HR support heading", kind: "line" },
+    { k: "hr", label: "HR support", kind: "rich" },
   ] },
   { key: "committees", title: "Committees", path: "/committees", fields: [
     { k: "banner_photo", label: "Banner photograph", kind: "image" },

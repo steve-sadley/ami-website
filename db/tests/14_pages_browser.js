@@ -172,7 +172,7 @@ window.__stubClient = {
     rows: [...document.querySelectorAll('.prow h3')].map(h => h.textContent),
     counts: [...document.querySelectorAll('.prow .meta')].map(m => m.textContent),
   }));
-  ok(list.rows.length === 15, 'fifteen pages are listed (0065 added three, 0069 the rules), got ' + list.rows.length);
+  ok(list.rows.length === 16, 'sixteen pages are listed (0065 added three, 0069 the rules, 0070 resources), got ' + list.rows.length);
   ok(list.rows.includes('About AMI') && list.rows.includes('CPD scheme'),
      'the pages are named rather than keyed');
   ok(/\d+ things to say/.test(list.counts[0] || ''), 'each page says how much is on it');

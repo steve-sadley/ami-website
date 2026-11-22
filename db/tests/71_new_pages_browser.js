@@ -144,10 +144,22 @@ const GUIDES = [
   ok(await painted(page) > 0.95 && await clean(page), 'painted, with no error and no policy violation');
   await page.close();
 
+  // publications and useful links (site 89)
+  page = await open('/resources');
+  const rs = await page.evaluate(() => ({ h1: document.querySelector('h1').textContent,
+    panels: [...document.querySelectorAll('.resources .res h3')].map(h => h.textContent),
+    files: [...document.querySelectorAll('.resources a[href^="/assets/"]')].map(a => a.getAttribute('href')),
+    nav: (document.querySelector('.navbar a.active') || {}).textContent }));
+  ok(rs.h1 === 'Publications and useful links' && rs.panels.length === 5, 'the resources page has its five panels, got ' + rs.panels.join('|'));
+  ok(rs.files.length === 3 && rs.files.every(f => fs.existsSync(path.join(ROOT, f))), 'the three files brought from the old site are in the bundle');
+  ok(rs.nav === 'Support & Guidance', 'it sits under Support & Guidance in the menu, got ' + rs.nav);
+  ok(await painted(page) > 0.95 && await clean(page), 'painted, with no error and no policy violation');
+  await page.close();
+
   // footer and membership
   page = await open('/membership');
   const f = await page.evaluate(() => ({ line: document.body.textContent.includes('checked against the AMI record'),
-    links: ['/guidance', '/rules', '/professional-conduct', '/committees'].every(h => document.querySelector('footer a[href="' + h + '"]')),
+    links: ['/guidance', '/rules', '/professional-conduct', '/committees', '/resources'].every(h => document.querySelector('footer a[href="' + h + '"]')),
     cards: [...document.querySelectorAll('#standards a.qcard')].map(a => a.getAttribute('href')) }));
   ok(!f.line, 'the footer no longer says every entry is checked against the AMI record');
   ok(f.links, 'the footer links to guidance documents, the rules, professional conduct and committees');
