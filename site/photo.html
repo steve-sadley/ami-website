@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your photograph | AMI</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://ttjvwxxtoidiiejyqmbc.supabase.co" crossorigin>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/favicon-32.png?v=70" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/favicon-16.png?v=70" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=70">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" as="font" type="font/woff2" href="/assets/jakarta.woff2?v=70" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=83">
+</head>
+<body>
+
+<main id="main"><div class="wrap">
+  <div id="subnav"></div>
+
+  <section class="pbanner" style="padding:10px 0 24px">
+    <div class="crumb"><a href="/profile">My profile</a> &nbsp;&rsaquo;&nbsp; <b>Photograph</b></div>
+    <h1>Your photograph</h1>
+    <p>Choose a picture, then move and scale it until the face sits where you want it.
+       Everything AMI needs is cut from the one square, so this is the only choice you have
+       to make.</p>
+  </section>
+
+  <div class="croplay">
+
+    <div>
+      <div class="cropcard glass">
+        <div class="cropstage" id="stage">
+          <canvas id="cv" width="920" height="920"></canvas>
+          <div class="band" id="band" style="display:none"><b>Card</b></div>
+          <div class="empty" id="empty">
+            <span>No picture chosen yet</span>
+            <span style="font-size:13px">JPEG, PNG or WebP. At least 600 pixels on the
+              short side.</span>
+          </div>
+        </div>
+
+        <div class="cropctl">
+          <div class="cl"><label for="zoom">Scale</label><span id="zv">100%</span></div>
+          <input type="range" id="zoom" min="100" max="300" value="100">
+        </div>
+
+        <div class="cropctl">
+          <div class="cl"><label for="bandy">Card band</label><span id="bv">Middle</span></div>
+          <input type="range" id="bandy" min="0" max="100" value="30">
+        </div>
+
+        <div class="cropbtns">
+          <label class="btn btn-g btn-s" style="cursor:pointer">
+            Choose a picture
+            <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+          </label>
+          <button class="btn btn-g btn-s" type="button" id="reset" disabled>Start again</button>
+          <button class="btn btn-red btn-s" type="button" id="save" disabled>Save photograph</button>
+        </div>
+
+        <div id="msg"></div>
+      </div>
+
+      <div class="callout">
+        <b>Drag the picture to move it. The slider scales it.</b> The red band is the strip
+        that runs across the top of your card, and the second slider moves it up and down so
+        the face is not cut in half.
+      </div>
+
+      <div class="callout" id="removebox" style="display:none">
+        <b>Remove the photograph.</b> Your card falls back to your verified scopes, and then
+        to the AMI mark, and the register shows your initials. Nothing else changes.
+        <div style="margin-top:14px">
+          <button class="btn btn-g btn-s" type="button" id="remove">Remove my photograph</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="head-left sec-head" style="margin-bottom:16px">
+        <div class="eyebrow"><span class="tri"></span>Live</div>
+        <h2>Where it ends up</h2>
+        <p style="max-width:60ch">Four places, one upload. These follow as you move the
+           picture, so nothing is a surprise after you save.</p>
+      </div>
+
+      <div class="prevrow">
+        <div class="prev glass-soft">
+          <div class="pk">Your profile</div>
+          <canvas id="p1" width="240" height="240" style="width:120px;height:120px"></canvas>
+          <div class="pn">Square, on your own pages</div>
+        </div>
+        <div class="prev glass-soft">
+          <div class="pk">Register and forum</div>
+          <canvas id="p2" width="112" height="112"
+                  style="width:56px;height:56px;border-radius:11px"></canvas>
+          <div class="pn">Small, beside your name</div>
+        </div>
+      </div>
+
+      <div class="prev glass-soft" style="margin-top:16px">
+        <div class="pk">Membership card</div>
+        <div class="prevcard">
+          <canvas id="p3" width="900" height="295"></canvas>
+          <div class="pcn">
+            <div class="g" id="pgrade"></div>
+            <div class="n" id="pname"></div>
+          </div>
+        </div>
+        <div class="pn">The strip your name is drawn over. Three to one, so a square crop
+          alone will not do it.</div>
+      </div>
+
+      <div class="head-left sec-head" style="margin:32px 0 14px">
+        <div class="eyebrow"><span class="tri"></span>What happens</div>
+        <h2>After you press save</h2>
+      </div>
+
+      <div class="aside glass" style="padding:8px 26px">
+        <ol class="steps-n">
+          <li>Your browser cuts the two pictures and sends <b>only those</b>. The original
+            never leaves your device, so the location and camera details buried in it never
+            leave either.</li>
+          <li>The upload goes through AMI rather than straight to storage, so the file is
+            checked on arrival: the type, the real signature rather than the name, the size
+            and the dimensions.</li>
+          <li>Both land in the <b>private</b> photograph store. Nothing there can be read by
+            an address alone, and every view is a signed link that expires.</li>
+          <li>Your card picks up the new strip on its own. There is nothing to reinstall and
+            nothing to reissue.</li>
+          <li>It appears publicly only if the switch on your profile says so, and that
+            switch is off until you turn it on.</li>
+        </ol>
+      </div>
+
+      <div class="callout">
+        <b>What AMI asks for.</b> Head and shoulders, looking at the camera, in reasonable
+        light. At least 600 pixels on the short side. JPEG, PNG or WebP, up to 20MB. No
+        sunglasses and no hard hat pulled down over the eyes, because the point of the
+        picture is that somebody at a gate can match it to the person in front of them.
+      </div>
+    </div>
+
+  </div>
+</div></main>
+
+<script src="/assets/site.js?v=83"></script>
+<script src="/assets/crop.js?v=70"></script>
+<script src="/assets/supabase.js?v=3"></script>
+<script src="/assets/page-photo.js?v=70"></script>
+</body>
+</html>

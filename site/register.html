@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Members register | AMI</title>
+<meta name="description" content="The public register of AMI members. Search by name, membership number, grade or employer.">
+<link rel="preconnect" href="https://ttjvwxxtoidiiejyqmbc.supabase.co" crossorigin>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/favicon-32.png?v=70" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/favicon-16.png?v=70" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=70">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" as="font" type="font/woff2" href="/assets/jakarta.woff2?v=70" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=83">
+</head>
+<body data-nav="/membership" data-page="register">
+
+<main id="main"><div class="wrap">
+
+  <section class="pbanner img wash ph"
+           style="background-image:linear-gradient(100deg,rgba(10,12,16,.93),rgba(10,12,16,.62) 46%,rgba(10,12,16,.10) 80%),url('/assets/photo-survey.webp?v=70')">
+    <div class="crumb"><a href="/">Home</a> &nbsp;&rsaquo;&nbsp;
+      <a href="/membership">Membership</a> &nbsp;&rsaquo;&nbsp; <b>Members register</b></div>
+    <h1>AMI members register</h1>
+    <p>Every current member who has chosen to be listed. Somebody who is not here is not a
+       current AMI member.</p>
+  </section>
+
+  <section style="padding-top:16px">
+    <div class="regtop">
+      <div class="fm-count reg-count" id="n"></div>
+      <div class="regsearch">
+        <input type="search" id="q" placeholder="Search name, number or employer" autocomplete="off"
+               aria-label="Search the register">
+        <select id="grade" aria-label="Filter by grade"><option value="">All grades</option></select>
+      </div>
+    </div>
+
+    <div id="out"></div>
+    <div class="rpage" id="pager"></div>
+  </section>
+
+</div></main>
+
+<script src="/assets/blocks.js?v=83"></script>
+<script src="/assets/site.js?v=83"></script>
+<script src="/assets/supabase.js?v=3"></script>
+<script src="/assets/page-register.js?v=70"></script>
+</body>
+</html>

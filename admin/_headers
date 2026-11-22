@@ -1,0 +1,41 @@
+# The admin app is ONE generated page and must never be served from a cache.
+#
+# This file did not exist until 30 October 2026, and its absence cost a round
+# trip the first time a screen was added: the new screen was not there, and a
+# bundle that had not been uploaded, a browser holding the previous copy and a
+# screen that was genuinely broken all looked exactly the same. The public site
+# has had this header since August for the same reason. The admin app is a
+# single HTML file with no versioned assets behind it, so there is nothing else
+# that could ever break the cache.
+#
+# Everything here is read live from the database on every load, so there is
+# nothing to gain by caching the page and a whole class of confusion to lose.
+/*
+  Cache-Control: no-store
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-MaRJv5W/KKzA2Rlgai3lmMEx0qZnKwgU+TCzZbw+zdM=' 'sha256-CZAW4G1McqVcgoOhdpMPAfyiVVzO0MqnfESd97NIiu8='; worker-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; img-src 'self' data: blob: https://*.supabase.co https://staging.ami.uk.com https://ami.uk.com https://www.ami.uk.com; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'
+
+# THE CONTENT SECURITY POLICY, from admin 18 (30 October 2026).
+#
+# This file used to say there was no policy on purpose: the app is one file
+# with its script inline, so 'self' would refuse it and 'unsafe-inline' would
+# allow what a policy exists to stop. Both true, and a third option was missed.
+# Each inline script is allowed by the SHA-256 of its exact text and nothing
+# else inline runs at all.
+#
+# What changed the decision: on 30 October the sanitiser here was found to run
+# the onerror="" on a pasted picture before removing it, with HTML straight off
+# the clipboard. The sanitiser is fixed. This is the second lock, the one the
+# public site already had and the reason the same fault was harmless there.
+#
+# THE LINE IS WRITTEN BY db/tools/admin-csp.py AND NEVER BY HAND. The hashes
+# change on every release; run the tool after any edit to index.html. Test 19
+# fails if it was not run, and then drives every screen under the policy.
+#
+# IF THE ADMIN APP EVER OPENS BLANK after an upload: delete the
+# Content-Security-Policy line above and upload again. That is the whole of the
+# way back, and it puts the app exactly where it was at admin 17.

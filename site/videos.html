@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video library | AMI</title>
+<meta name="description" content="Recorded webinars, seminars and Annual General Meeting sessions from the Asbestos Management Institute.">
+<link rel="preconnect" href="https://ttjvwxxtoidiiejyqmbc.supabase.co" crossorigin>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/favicon-32.png?v=70" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/favicon-16.png?v=70" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=70">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" as="font" type="font/woff2" href="/assets/jakarta.woff2?v=70" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=83">
+</head>
+<body data-nav="/news" data-page="videos">
+
+<main id="main"><div class="wrap">
+
+  <section class="pbanner">
+    <div class="crumb"><a href="/">Home</a> &nbsp;&rsaquo;&nbsp;
+      <a href="/news">News and events</a> &nbsp;&rsaquo;&nbsp; <b>Video library</b></div>
+    <div class="eyebrow"><span class="tri"></span>Recordings</div>
+    <h1>Video library</h1>
+    <p>Recorded webinars, seminars and AGM sessions, hosted on Vimeo and gathered here.</p>
+  </section>
+
+  <section style="padding-top:14px"><div id="hero"></div></section>
+
+  <section style="padding-top:20px">
+    <div class="sec-head head-left">
+      <div class="eyebrow"><span class="tri"></span>All recordings</div>
+      <h2>Webinars, seminars and events</h2>
+    </div>
+    <div class="vgrid" id="out"></div>
+  </section>
+
+</div></main>
+
+<!-- The player. One overlay for the whole page: whichever card is clicked writes
+     its Vimeo identifier into the same frame, so there is never more than one
+     player on the page and nothing loads until somebody asks for it. -->
+<div class="vmodal" id="vmodal" role="dialog" aria-modal="true" aria-label="Video player">
+  <div class="vmodal-inner">
+    <button class="vclose" id="vclose" aria-label="Close the video">&times;</button>
+    <div class="vframe"><iframe id="vframe" title="AMI video" allow="autoplay; fullscreen; picture-in-picture"></iframe></div>
+  </div>
+</div>
+
+<script src="/assets/blocks.js?v=83"></script>
+<script src="/assets/site.js?v=83"></script>
+<script src="/assets/supabase.js?v=3"></script>
+<script src="/assets/page-videos.js?v=70"></script>
+</body>
+</html>

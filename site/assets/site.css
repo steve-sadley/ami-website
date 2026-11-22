@@ -1,0 +1,1297 @@
+@font-face{
+  font-family:'Plus Jakarta Sans';
+  font-style:normal;
+  font-weight:200 800;
+  font-display:swap;
+  src:url('/assets/jakarta.woff2?v=70') format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,
+    U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,
+    U+2215,U+FEFF,U+FFFD;
+}
+/* =============================================================================
+   AMI public site
+
+   The design system from the agreed prototype: the moving aurora background,
+   the drifting blobs, the glass panels, the white logo card beside a floating
+   navigation pill, and the white on red button pair.
+
+   Everything here comes from the prototype. What has been added is the handful
+   of components the prototype showed as pictures and the live site needs as
+   working things: the register list, the forms, and the article body.
+
+   One stylesheet for every page, because seven pages sharing a look is one file
+   rather than seven.
+   ============================================================================= */
+
+/* Slate and red.
+
+   The background carries NO red at all. It is slate grey, top to bottom, on
+   every page. Red appears only on things: a button, a badge, an icon tile, the
+   featured grade card, the call to action. That is the whole rule, and it is why
+   the red reads as red when it does appear.
+
+   The earlier version kept one red glow behind the hero. On the home page the
+   photograph covered most of it and it looked deliberate. On a short inner page
+   there is nothing to cover it, so every other page came out pink. One rule for
+   every page is the only version of this that stays right. */
+:root{
+  --body:#0f1116; --txt:#fff; --muted:#b6bdc7; --eyebrow:#ff7a82;
+  --bg-grad:linear-gradient(135deg,#0d0f13,#171b22,#0f1217,#1c212a,#0d0f13);
+  /* The blobs are the only thing behind a panel worth blurring, so they are
+     kept tighter than they once were. At a 90 pixel blur the field was already
+     so soft that blurring it again through a panel changed nothing, and the
+     glass came out looking like flat grey paint. Half that blur, further apart
+     in tone, and light and shade now travel across the page. */
+  --blob1:#38414f;      /* slate, lighter, top right   */
+  --blob2:#171c24;      /* slate, deeper, mid left     */
+  --blob3:#454f5e;      /* slate, softest, low right   */
+  --blobblur:50px;
+  --blobop:.68; --blob2op:.6; --blob3op:.55;
+  /* The mesh. Barely visible in clear air, and the thing a panel is actually
+     refracting. See the .mesh rule below. */
+  --mesh-op:.09;
+  --glass:rgba(255,255,255,.072); --glass-bd:rgba(255,255,255,.2);
+  --glass-blur:24px; --glass-sat:168%;
+  /* The lit top edge and the inner highlight. These are what tell the eye a
+     panel has a near face and a far one rather than being a tinted rectangle. */
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.15),transparent 32%);
+  --inner:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.22);
+  --glass-soft:rgba(255,255,255,.05); --glass-soft-bd:rgba(255,255,255,.13);
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+  --input-bg:rgba(0,0,0,.3); --input-bd:rgba(255,255,255,.22);
+  /* One pill, one rest state, one hover state. See the buttons section. */
+  --btn-bg:rgba(255,255,255,.10); --btn-bd:rgba(255,255,255,.34); --btn-col:#fff;
+  --btn-on-bg:#fff; --btn-on-col:#B50410;
+  --footer:rgba(0,0,0,.45); --link:#ff8f97;
+  --finder-bg:rgba(255,255,255,.09); --finder-bd:rgba(255,255,255,.2);
+  --ok:#4ade80; --warn:#ffc978;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',Arial,sans-serif;color:var(--txt);background:var(--body);
+  line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+/* The container grows with the screen instead of stopping at 1200px. On a
+   laptop nothing changes. On a large monitor the site fills it rather than
+   sitting in a column with two feet of empty graphite either side.
+
+   Text is held back separately, in characters rather than pixels, because a
+   line of prose 200 characters long is unreadable however wide the screen is.
+   Panels, photographs and grids stretch; paragraphs do not. */
+.wrap{max-width:min(1680px, 94vw);margin:0 auto;padding:0 clamp(18px,3vw,44px);
+  position:relative;z-index:2}
+
+/* ---------- the background ---------- */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg-grad);
+  background-size:300% 300%;animation:aurora 22s ease infinite}
+@keyframes aurora{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+/* A fine slate mesh across the field, masked to fade out towards the edges. It
+   is almost invisible where nothing covers it. Behind a panel the blur smears
+   it into a soft glow, and that difference between covered and uncovered is
+   what the eye reads as thickness. It is a gradient rather than a picture, so
+   it costs no request and around 300 bytes. It sits below the blobs on purpose,
+   so a blob softens it where the two overlap. */
+.mesh{position:absolute;inset:-40%;opacity:var(--mesh-op);transform:rotate(-14deg);
+  background:
+    repeating-linear-gradient(0deg,rgba(190,205,225,.55) 0 1px,transparent 1px 46px),
+    repeating-linear-gradient(90deg,rgba(190,205,225,.55) 0 1px,transparent 1px 46px);
+  -webkit-mask-image:radial-gradient(70% 60% at 32% 26%,#000,transparent 78%);
+  mask-image:radial-gradient(70% 60% at 32% 26%,#000,transparent 78%)}
+.blob{position:absolute;border-radius:50%;filter:blur(var(--blobblur))}
+.b1{width:700px;height:700px;background:var(--blob1);opacity:var(--blobop);top:-280px;right:-180px;animation:f1 16s ease-in-out infinite}
+.b2{width:620px;height:620px;background:var(--blob2);opacity:var(--blob2op);top:30%;left:-180px;animation:f2 19s ease-in-out infinite}
+.b3{width:520px;height:520px;background:var(--blob3);opacity:var(--blob3op);top:72%;right:12%;animation:f1 13s ease-in-out infinite}
+@keyframes f1{50%{transform:translate(60px,70px) scale(1.08)}}
+@keyframes f2{50%{transform:translate(-70px,-50px) scale(1.05)}}
+@media (prefers-reduced-motion: reduce){.bg{animation:none}.blob{animation:none !important}}
+
+/* ---------- glass ---------- */
+/* The sheen is a background LAYER rather than a pseudo element, deliberately.
+   Half the things carrying .glass already use ::before or ::after for something
+   of their own, and a pseudo element here would silently take one of them away.
+   The backdrop filter samples what is behind the element, so its own background
+   layers sit on top of the blur and the two do not fight. */
+.glass{background:var(--sheen),var(--glass);
+  backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border:1px solid var(--glass-bd);
+  border-radius:22px;box-shadow:var(--shadow),var(--inner)}
+.glass-soft{background:var(--sheen),var(--glass-soft);
+  backdrop-filter:blur(17px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter:blur(17px) saturate(var(--glass-sat));
+  border:1px solid var(--glass-soft-bd);border-radius:18px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.glass-red{background:var(--sheen),linear-gradient(160deg,rgba(228,6,19,.55),rgba(228,6,19,.18));
+  backdrop-filter:blur(20px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter:blur(20px) saturate(var(--glass-sat));
+  border:1px solid rgba(255,255,255,.28);border-radius:22px;color:#fff;
+  box-shadow:var(--inner)}
+
+/* ---------- buttons ---------- */
+/* Steve's rule, 11 August 2026. Every pill rests the same way, translucent grey
+   with white writing, and turns white with red writing under the pointer, with
+   a short twitch as it goes. One rest state and one hover state across the whole
+   site, so a pill always behaves the way the last one did.
+ *
+ * The primary and the secondary pill therefore look identical at rest, which is
+ * deliberate but has a consequence: nothing on a page says which action is the
+ * main one any more. Where a pill needs to show it is the chosen one, the news
+ * filters being the only case, add `on` and it wears the hover look permanently.
+ *
+ * The keyboard gets the same treatment as the pointer. A hover only rule would
+ * leave somebody tabbing through the page unable to see where they are. */
+.btn{display:inline-block;font-weight:700;font-size:15px;padding:14px 28px;border-radius:40px;
+  cursor:pointer;transition:background .16s,color .16s,border-color .16s;
+  border:1px solid transparent;font-family:inherit}
+.btn-p,.btn-g{background:var(--btn-bg);border-color:var(--btn-bd);color:var(--btn-col)}
+.btn-p:hover,.btn-g:hover,.btn-p:focus-visible,.btn-g:focus-visible,.btn.on{
+  background:var(--btn-on-bg);border-color:var(--btn-on-bg);color:var(--btn-on-col)}
+.btn-p:hover,.btn-g:hover{animation:twitch .3s ease}
+
+/* The twitch. It settles at two pixels up, which is where the pill stays while
+   the pointer is on it, so there is no drop back when the animation finishes. */
+@keyframes twitch{
+  0%   {transform:translateY(0)    rotate(0)}
+  28%  {transform:translateY(-4px) rotate(-.9deg)}
+  56%  {transform:translateY(-1px) rotate(.7deg)}
+  100% {transform:translateY(-2px) rotate(0)}
+}
+.btn-p:hover,.btn-g:hover{transform:translateY(-2px)}
+
+.btn-red{background:#E40613;color:#fff}
+.btn-red:hover{background:#B50410}
+/* A pill that cannot be pressed does not move and does not light up. */
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn[disabled]:hover{animation:none;transform:none;
+  background:var(--btn-bg);border-color:var(--btn-bd);color:var(--btn-col)}
+.btn-red[disabled]:hover{background:#E40613;color:#fff}
+.btn-s{padding:9px 18px;font-size:13px}
+/* On the red panel a translucent white pill would read as pink and all but
+   vanish. Same shape, same rule, graphite behind it instead. */
+.glass-red .btn-p,.glass-red .btn-g{background:rgba(15,17,22,.45);
+  border-color:rgba(255,255,255,.5)}
+.glass-red .btn-p:hover,.glass-red .btn-g:hover,
+.glass-red .btn-p:focus-visible,.glass-red .btn-g:focus-visible{
+  background:var(--btn-on-bg);border-color:var(--btn-on-bg);color:var(--btn-on-col)}
+@media (prefers-reduced-motion: reduce){
+  .btn-p:hover,.btn-g:hover{animation:none;transform:none}
+}
+
+/* ---------- type ---------- */
+.eyebrow{font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--eyebrow);
+  font-weight:600;margin-bottom:16px}
+.tri{width:0;height:0;border-left:8px solid #E40613;border-top:5px solid transparent;
+  border-bottom:5px solid transparent;display:inline-block;flex:none}
+.tri.white{border-left-color:#fff}
+.eyebrow .tri{margin-right:9px}
+section{padding:60px 0}
+.sec-head{max-width:62ch;margin:0 auto 40px;text-align:center}
+.sec-head .eyebrow{text-align:center}
+.sec-head h2{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.5px}
+.sec-head p{font-size:17px;color:var(--muted);margin-top:12px}
+
+/* ---------- navigation ---------- */
+nav.top{position:sticky;top:16px;z-index:50;margin:16px auto 0;max-width:min(1680px, 94vw);
+  display:flex;gap:14px;align-items:stretch;padding:0 clamp(18px,3vw,44px)}
+.brandcard{background:#fff;border-radius:16px;padding:10px 22px;display:flex;align-items:center;
+  box-shadow:var(--shadow);flex:none}
+.brandcard img{height:56px;width:auto}
+.navbar{flex:1;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px 12px 28px;border-radius:34px}
+.navbar ul{display:flex;gap:24px;list-style:none;font-size:15px;font-weight:600}
+.navbar ul a:hover,.navbar ul a.active{color:#E40613}
+.navbar .right{display:flex;gap:10px;align-items:center}
+.burger{display:none;background:none;border:none;color:var(--txt);font-size:24px;cursor:pointer}
+/* A menu item or a button that breaks onto two lines makes the bar twice as
+   tall and reads as broken, and it did on every width from 1,080 to about
+   1,340 (found by Steve, 3 November 2026). So nothing in the bar wraps; the
+   gaps close up between 1,240 and 1,360; and below 1,240 the burger takes
+   over, because under that the seven items and two buttons do not fit. */
+.navbar ul a,.navbar .right .btn{white-space:nowrap}
+@media(max-width:1360px){
+  .navbar{padding-left:20px}
+  .navbar ul{gap:16px;font-size:14px}
+  .navbar .right .btn{padding-left:16px;padding-right:16px}
+}
+
+@media(max-width:1240px){
+  .navbar ul{display:none;position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;
+    background:rgba(13,15,19,.97);backdrop-filter:blur(20px);border:1px solid var(--glass-bd);
+    border-radius:22px;padding:10px 0;box-shadow:var(--shadow)}
+  .navbar ul.open{display:flex}
+  .navbar ul li a{display:block;padding:13px 28px}
+  .navbar{position:relative}
+  .burger{display:block;order:3}
+  .navbar .right{margin-left:auto}
+  .brandcard img{height:42px}
+}
+@media(max-width:760px){
+  /* Three controls and a logo do not fit on a telephone. Check a member is in
+     the menu and on every page anyway, so Join AMI is the one that stays. */
+  .navbar .right .btn-g{display:none}
+  .navbar .right .btn{padding:11px 18px;font-size:14px}
+  nav.top{gap:10px;padding:0 16px}
+  .wrap{padding:0 18px}
+}
+
+.crumb{font-size:13px;color:var(--muted);margin-bottom:14px}
+.crumb a:hover{color:#E40613}
+.crumb b{color:var(--link);font-weight:600}
+
+/* ---------- photographs ---------- */
+.ph{background-size:cover;background-position:center;filter:brightness(1.08) contrast(1.04) saturate(1.04)}
+
+/* ---------- hero ---------- */
+/* The photograph sits inside the frame with its corners showing, rather than
+   running off the edge of the window. Flush to the edge reads as a background
+   rather than as a picture, and you lose the sense that it is a panel at all. */
+.hero{padding:60px 0 20px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,3.4vw,64px);align-items:center}
+.hero h1{font-size:clamp(38px,5.4vw,64px);font-weight:800;line-height:1.05;letter-spacing:-1.3px}
+.hrot{position:relative}
+.hrot-space{visibility:hidden;display:block}
+.hrot-item{position:absolute;left:0;right:0;top:0;opacity:0;transition:opacity 1.4s ease}
+.hrot-item.on{opacity:1}
+.hero p.lede{font-size:clamp(17px,1.25vw,21px);color:var(--muted);max-width:58ch;margin:22px 0 32px}
+.hero .actions{display:flex;gap:14px;flex-wrap:wrap}
+.hero-pic{height:clamp(300px,32vw,540px);border-radius:26px;position:relative;overflow:hidden}
+/* The photographs stack on top of each other and cross fade, on exactly the
+   timing the headline uses, so the picture and the words change together as one
+   movement rather than as two things happening near each other. */
+.hero-pic .shot{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transition:opacity 1.4s ease;filter:brightness(1.08) contrast(1.04) saturate(1.04)}
+.hero-pic .shot.on{opacity:1}
+.hero-pic .badge{z-index:2;position:absolute;left:20px;bottom:20px;padding:11px 18px;font-weight:700;
+  font-size:14px;border-radius:30px;background:rgba(0,0,0,.62);border:1px solid rgba(255,255,255,.4);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.tlist{list-style:none}
+.tlist li{position:relative;padding:6px 0 6px 22px;color:var(--muted);font-size:15px}
+.tlist li:before{content:'';position:absolute;left:0;top:14px;width:0;height:0;
+  border-left:7px solid #E40613;border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-pic{height:300px}
+}
+
+/* ---------- the finder ---------- */
+.finder{margin:40px 0 0;padding:22px;display:grid;grid-template-columns:1.2fr 1fr auto;gap:16px;
+  align-items:end;background:var(--finder-bg);border:1px solid var(--finder-bd);border-radius:22px;
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 26px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(228,6,19,.22)}
+.finder label{display:block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--txt);margin:0 0 8px 4px}
+.finder input,.finder select{width:100%;padding:15px 16px;border-radius:12px;
+  border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.96);color:#171416;font-size:15px;
+  font-weight:500;font-family:inherit;outline:none;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.finder input::placeholder{color:#8a8a8a}
+.finder input:focus,.finder select:focus{border-color:#E40613;box-shadow:0 0 0 3px rgba(228,6,19,.25)}
+.finder select option{color:#111}
+.finder .btn-red{box-shadow:0 10px 26px rgba(228,6,19,.5);padding:15px 26px}
+@media(max-width:820px){.finder{grid-template-columns:1fr}}
+
+/* ---------- cards ---------- */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.6vw,28px)}
+@media(max-width:900px){.cards3{grid-template-columns:1fr}}
+.qcard{padding:30px 26px;transition:.18s}
+.qcard:hover{transform:translateY(-5px)}
+.qicon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;background:#E40613;color:#fff;box-shadow:0 8px 20px rgba(228,6,19,.35)}
+.qicon svg{width:27px;height:27px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.qcard h3{font-size:21px;font-weight:800;margin-bottom:10px}
+.qcard p{font-size:15px;color:var(--muted);margin-bottom:16px}
+.qcard .more{color:var(--link);font-weight:700;font-size:15px}
+
+/* The four figure statistics bar came out on 11 August, from the home page and
+   the About page, and its rules came out with it rather than being commented
+   out. Dead CSS is a class somebody puts back on an element in six months. */
+
+.newsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.6vw,28px)}
+@media(max-width:900px){.newsgrid{grid-template-columns:1fr}}
+.ncard{overflow:hidden;transition:.18s;display:block}
+.ncard:hover{transform:translateY(-5px)}
+.nimg{height:clamp(170px,14vw,240px);position:relative}
+.nimg .cat{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px);color:#fff;font-size:12px;
+  font-weight:700;letter-spacing:.5px;padding:5px 12px;border-radius:20px;text-transform:uppercase}
+.ncard .body{padding:22px}
+.ncard .date{font-size:13px;color:var(--link);font-weight:700;margin-bottom:8px}
+.ncard h4{font-size:18px;font-weight:700;line-height:1.3;margin-bottom:12px}
+.ncard p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.ncard .more{color:var(--link);font-weight:700;font-size:14px}
+
+.cta{padding:60px 40px;text-align:center}
+.cta h2{font-size:clamp(30px,4vw,44px);font-weight:800;margin-bottom:14px}
+.cta p{font-size:18px;max-width:62ch;margin:0 auto 26px;color:#ffe0e2}
+
+/* ---------- inner page banner ---------- */
+.pbanner{overflow:hidden;position:relative;padding:56px 0 10px;margin-top:22px}
+.pbanner h1{font-size:clamp(34px,5vw,52px);font-weight:800;letter-spacing:-1px}
+.pbanner p{font-size:18px;margin-top:12px;max-width:70ch;color:var(--muted)}
+
+/* ---------- the register ---------- */
+.reg-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  margin:22px 0}
+.reg-count{font-size:14px;color:var(--muted)}
+.mcard{display:flex;gap:18px;padding:20px 22px;margin-bottom:14px;align-items:center;transition:.16s}
+.mcard:hover{transform:translateY(-3px)}
+.mcard .av{width:70px;height:70px;border-radius:16px;flex:none;background:rgba(255,255,255,.09);
+  border:1px solid var(--glass-bd);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:22px;letter-spacing:-1px;color:#ffb0b5;background-size:cover;background-position:center}
+.mcard .grade-b{display:inline-block;background:#E40613;color:#fff;font-size:11px;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:6px}
+.mcard h4{font-size:18px;font-weight:800}
+.mcard .loc{font-size:13px;color:var(--muted);margin-top:2px}
+.mcard .tags{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.mcard .tags span{font-size:12px;padding:4px 10px;border-radius:20px;background:var(--glass-soft);
+  color:var(--muted)}
+.mcard .view{margin-left:auto;flex:none}
+@media(max-width:640px){
+  .mcard{flex-wrap:wrap}
+  .mcard .view{margin-left:0;width:100%}
+}
+.pager{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:26px;flex-wrap:wrap}
+.pager span{font-size:14px;color:var(--muted)}
+
+/* ---------- a member's page ---------- */
+.profile{display:grid;grid-template-columns:230px 1fr;gap:34px;align-items:start;padding:34px}
+@media(max-width:760px){.profile{grid-template-columns:1fr}}
+.photo{width:230px;height:230px;border-radius:20px;object-fit:cover;border:1px solid var(--glass-bd);
+  background:rgba(255,255,255,.08)}
+.photo.blank{display:flex;align-items:center;justify-content:center;font-size:54px;font-weight:800;
+  color:#ffb0b5;letter-spacing:-2px}
+.facts{list-style:none;margin-top:22px}
+.facts li{display:flex;gap:18px;padding:12px 0;border-bottom:1px solid var(--glass-soft-bd);font-size:15px;
+  flex-wrap:wrap}
+.facts li:last-child{border-bottom:none}
+.facts li b{min-width:200px;font-weight:600;color:var(--muted)}
+
+/* ---------- badges ---------- */
+.badge-t{display:inline-block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;
+  padding:5px 12px;border-radius:20px;background:var(--glass-soft);color:var(--muted);
+  border:1px solid var(--glass-soft-bd)}
+.badge-t.ok{background:rgba(74,222,128,.16);color:#9df3bd;border-color:rgba(74,222,128,.35)}
+.badge-t.red{background:#E40613;color:#fff;border-color:transparent}
+
+/* ---------- forms ---------- */
+form.stack{max-width:700px}
+.field{margin-bottom:20px}
+.field label{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:700;
+  color:var(--muted);margin:0 0 8px 4px}
+.field input,.field select,.field textarea{width:100%;padding:14px 16px;border-radius:12px;
+  border:1px solid var(--input-bd);background:var(--input-bg);color:var(--txt);font-size:15px;
+  font-family:inherit;outline:none}
+.field textarea{resize:vertical;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#E40613;
+  box-shadow:0 0 0 3px rgba(228,6,19,.25)}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.45)}
+.field select option{color:#111}
+.field .hint{font-size:13px;color:var(--muted);margin-top:7px;padding-left:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+.note{padding:16px 18px;border-radius:14px;font-size:15px;margin:20px 0;line-height:1.55}
+.note.err{background:rgba(228,6,19,.18);border:1px solid rgba(255,120,130,.5)}
+.note.ok{background:rgba(74,222,128,.14);border:1px solid rgba(74,222,128,.4)}
+.note.info{background:var(--glass-soft);border:1px solid var(--glass-soft-bd)}
+
+/* ---------- article ---------- */
+.prose{max-width:70ch;font-size:17px;color:#f3e6e7}
+.prose p{margin-bottom:1.15em}
+.prose h2{font-size:26px;margin:1.6em 0 .5em}
+.prose ul,.prose ol{margin:0 0 1.15em 1.3em}
+.prose li{margin-bottom:.4em}
+
+/* ---------- states ---------- */
+.state{padding:56px 20px;text-align:center;color:var(--muted)}
+.spin{display:inline-block;width:24px;height:24px;border:3px solid rgba(255,255,255,.2);
+  border-top-color:#E40613;border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- footer ---------- */
+footer{background:var(--footer);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  margin-top:60px;padding:52px 0 30px;position:relative;z-index:2;
+  border-top:1px solid var(--glass-soft-bd)}
+footer .cols{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:clamp(24px,2.4vw,44px);margin-bottom:34px}
+@media(max-width:820px){footer .cols{grid-template-columns:1fr 1fr}}
+footer h4{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:#fff;font-weight:800;
+  margin-bottom:14px}
+footer a{display:block;padding:5px 0;color:var(--muted);font-size:15px}
+footer a:hover{color:#fff}
+footer p{color:var(--muted);font-size:15px}
+footer .base{border-top:1px solid var(--glass-soft-bd);padding-top:22px;display:flex;gap:16px;
+  flex-wrap:wrap;justify-content:space-between;font-size:13px;color:var(--muted)}
+footer .flogo{background:#fff;border-radius:12px;padding:8px 16px;display:inline-flex;margin-bottom:16px}
+footer .flogo img{height:38px;width:auto}
+
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:16px;top:12px;background:#fff;color:#B50410;padding:10px 16px;border-radius:8px;z-index:99}
+
+
+/* ---------- width, and the one exception to it ---------- */
+/* Steve's rule, 11 August 2026. EVERY content block lines up with the container,
+   and the footer is the only thing that runs to the edges of the window.
+   A block that broke out was the one element on the page agreeing with nothing
+   above or below it, and it showed most on a wide monitor, which is where the
+   container is widest and the mismatch largest.
+   The `.full` class that did the breaking out, `width:100vw` with a negative
+   margin either side, has been taken out rather than left unused, because a
+   class sitting in the stylesheet doing nothing is a class somebody puts back on
+   an element in six months. The footer does not need it: it sits outside
+   `.wrap` in the markup and holds its own `.wrap` inside, which is why it
+   reaches the edges without a breakout and why nothing here affects it. */
+
+/* ---------- band, a photograph with words over it ---------- */
+.band{border-radius:26px;overflow:hidden;position:relative;padding:70px 54px;color:#fff}
+.band > .inner{max-width:none;margin:0;padding:0}
+.band h2{font-size:clamp(26px,3.4vw,42px);font-weight:800;max-width:22ch;line-height:1.12}
+.band p{font-size:17px;color:#f0dcde;margin:14px 0 24px;max-width:56ch}
+@media(max-width:700px){.band{padding:48px 26px}}
+
+/* ---------- grades ---------- */
+/* Four across, so eight grades fall into two even rows of four.
+   This was auto-fit with a 240 pixel minimum, chosen when there were three
+   grades and the count was expected to change. With eight, auto-fit gave five
+   on the top row and three on the bottom on a wide monitor, which reads as a
+   layout that has gone wrong rather than as a deliberate arrangement.
+   A ninth grade would leave a hole on the second row, so if one is ever added,
+   either add a tenth or come back to auto-fit. */
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.4vw,24px)}
+@media(max-width:1100px){.grades{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:820px){.grades{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grades{grid-template-columns:1fr}}
+.grade{padding:28px 22px;text-align:center;transition:.18s;display:flex;flex-direction:column;align-items:center}
+/* The fee sits on the card's bottom edge whatever the length of the words above
+   it, so "On application" lines up across a row (Steve, 22 November 2026). A
+   grid stretches every card in a row to the tallest, and margin-top:auto takes
+   up the difference. */
+.grade .price{margin-top:auto;padding-top:12px}
+.grade:hover{transform:translateY(-5px)}
+.grade .tag{display:inline-block;background:var(--glass-soft);font-weight:700;font-size:12px;
+  letter-spacing:1px;padding:5px 14px;border-radius:20px;margin-bottom:14px;text-transform:uppercase}
+/* No card is red at rest. Every grade turns red under the pointer, or when
+   reached with the keyboard, with the same lift as before (Steve, 22 November
+   2026). The red is .glass-red's own, so it cannot drift from the other red
+   panels. */
+.grade:hover,.grade:focus-within{background:var(--sheen),linear-gradient(160deg,rgba(228,6,19,.55),rgba(228,6,19,.18));
+  border-color:rgba(255,255,255,.28)}
+.grade:hover .tag,.grade:focus-within .tag{background:#fff;color:#B50410}
+.grade .tag{transition:background .18s,color .18s}
+.grade h4{font-size:18px;font-weight:800;margin-bottom:8px}
+.grade p{font-size:14px;color:var(--muted)}
+.grade .price{font-size:30px;font-weight:800}
+.grade .price span{font-size:14px;opacity:.7}
+.grade p{transition:color .18s}
+.grade:hover p,.grade:focus-within p{color:#ffe3e5}
+
+/* ---------- support grid ---------- */
+.support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.4vw,24px)}
+@media(max-width:900px){.support-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.support-grid{grid-template-columns:1fr}}
+.scard{padding:24px}
+.scard h4{font-size:17px;font-weight:700;margin-bottom:8px}
+.scard .sicon{width:44px;height:44px;border-radius:12px;background:#E40613;color:#fff;display:flex;
+  align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 6px 16px rgba(228,6,19,.3)}
+.scard .sicon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.scard p{font-size:14px;color:var(--muted)}
+
+/* ---------- split, intro, steps, faq ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:22px;overflow:hidden}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+.split .pic{min-height:360px}
+.split .txt{padding:44px}
+.split h2{font-size:28px;font-weight:800;margin-bottom:14px}
+.split p{font-size:16px;color:var(--muted);margin-bottom:14px}
+
+.intro-grid{display:grid;grid-template-columns:1.35fr .95fr;gap:44px;align-items:start}
+@media(max-width:900px){.intro-grid{grid-template-columns:1fr}}
+.intro h2{font-size:30px;font-weight:800;margin-bottom:16px}
+.intro p{font-size:16px;color:var(--muted);margin-bottom:14px}
+.aside{padding:28px}
+.aside h3{font-size:18px;font-weight:800;margin-bottom:14px}
+.aside ul{list-style:none}
+.aside li{font-size:15px;padding:9px 0 9px 26px;position:relative;border-bottom:1px solid var(--glass-soft-bd)}
+.aside li:last-child{border-bottom:none}
+.aside li::before{content:"\2713";color:#E40613;font-weight:800;position:absolute;left:0}
+
+.steprow{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:820px){.steprow{grid-template-columns:1fr}}
+.step{padding:28px 24px}
+.step .n{width:46px;height:46px;border-radius:50%;background:#E40613;color:#fff;font-weight:800;
+  font-size:20px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.step h4{font-size:19px;font-weight:700;margin-bottom:8px}
+.step p{font-size:14px;color:var(--muted)}
+
+.faq{max-width:820px;margin:0 auto}
+.faq details{padding:2px 22px;margin-bottom:12px}
+.faq summary{list-style:none;cursor:pointer;font-weight:700;font-size:16px;padding:18px 0;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:0;color:#E40613;font-size:22px}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{font-size:15px;color:var(--muted);padding:0 0 18px}
+
+/* Sections fade up as they arrive, as they did in the prototype. Anything that
+   has not been revealed yet is still readable if the script never runs. */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+
+/* ---------- the application form ---------- */
+.fset{margin:0 0 34px;padding:0;border:0}
+.fset > legend{font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:var(--eyebrow);
+  font-weight:600;margin-bottom:18px;padding:0}
+.drop{border:1px dashed rgba(255,255,255,.28);border-radius:14px;padding:18px;background:rgba(0,0,0,.18);
+  transition:border-color .15s,background .15s}
+.drop.over{border-color:#E40613;background:rgba(228,6,19,.08)}
+.drop input[type=file]{width:100%;font-size:14px}
+.drop .picked{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.drop .picked span{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.drop .picked b{color:#fff;font-weight:600}
+.sigwrap{border:1px solid var(--input-bd);border-radius:14px;background:#fff;overflow:hidden}
+.sigwrap .sigtabs{display:flex;gap:2px;padding:6px;background:rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.1)}
+.sigwrap .sigtabs button{background:transparent;border:1px solid transparent;color:#4a515b;padding:6px 14px;
+  border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.sigwrap .sigtabs button.on{background:#fff;border-color:rgba(0,0,0,.12);color:#111}
+.sigwrap canvas{display:block;width:100%;height:170px;touch-action:none;cursor:crosshair;background:#fff}
+.sigwrap .typed{padding:26px 18px;background:#fff}
+.sigwrap .typed input{border:0;border-bottom:1px solid rgba(0,0,0,.25);border-radius:0;background:transparent;
+  color:#111;font-size:34px;font-family:'Segoe Script','Bradley Hand','Snell Roundhand',cursive;
+  padding:6px 2px;box-shadow:none}
+.sigwrap .typed input:focus{border-bottom-color:#E40613;box-shadow:none}
+.sigwrap .sigfoot{display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(0,0,0,.06);
+  border-top:1px solid rgba(0,0,0,.1)}
+.sigwrap .sigfoot span{font-size:12px;color:#4a515b;margin-right:auto}
+.sigwrap .sigfoot button{background:#fff;border:1px solid rgba(0,0,0,.15);color:#333;padding:5px 12px;
+  border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+
+
+/* =============================================================================
+   THE INNER PAGES
+
+   Everything below is the prototype's composition for the pages that are not the
+   home page, moved across into the graphite and red scheme.
+
+   The rule that governs all of it: red appears on things, never on a background.
+   Where the prototype used a near black red behind a photograph, this uses the
+   same near black graphite, so a page with a picture at the top does not come
+   out pink. Where the prototype used its pink link colour, this uses var(--link),
+   which is the one place that colour is decided.
+   ============================================================================= */
+
+/* ---------- a banner with a photograph behind it ---------- */
+/* The plain .pbanner is words on the page background. This is the same banner
+   with a picture behind it and a graphite wash over the picture, dark on the
+   left where the words are and clearing to the right so the photograph is still
+   a photograph. */
+.pbanner.img{padding:clamp(38px,4.4vw,58px) clamp(26px,3.4vw,52px);min-height:clamp(260px,26vw,340px);
+  display:flex;flex-direction:column;justify-content:center;border-radius:24px;color:#fff;
+  background-size:cover;background-position:center}
+/* BANNER WAIT: on a page whose words and pictures come from the database, the
+   banner shows only its dark wash until site.js says the right picture is in
+   place (body.blocks-ready), so the bundle's picture never flashes up first. */
+body[data-page]:not(.blocks-ready) .pbanner.img{
+  background-image:linear-gradient(100deg,rgba(10,12,16,.93),rgba(10,12,16,.62) 46%,rgba(10,12,16,.10) 80%)!important;
+  background-color:#1b1f26}
+.pbanner.img p{color:#dfe4ec}
+.pbanner.img .crumb{color:#c8cfda}
+.pbanner.img .crumb a:hover{color:#fff}
+.pbanner.img .crumb b{color:#fff}
+.pbanner.img .crumb,.pbanner.img h1,.pbanner.img p,.pbanner.img .meta{
+  text-shadow:0 2px 18px rgba(0,0,0,.72)}
+.pbanner .cat{display:inline-block;align-self:flex-start;background:#E40613;color:#fff;font-size:12px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:5px 12px;border-radius:20px;
+  margin-bottom:12px}
+.pbanner .meta{margin-top:12px;font-size:14px;color:#dfe4ec}
+/* The wash. Kept here rather than repeated inline on nine pages, so the day the
+   wash is judged too dark there is one number to change. */
+.wash{background-image:linear-gradient(100deg,rgba(10,12,16,.93),rgba(10,12,16,.62) 46%,rgba(10,12,16,.10) 80%)}
+/* The wash runs left to right, which is right on a wide banner where the words
+   are on the left and the photograph clears to the right. On a telephone the
+   banner is nearly square and the words run the full width, so the same wash
+   leaves half a headline sitting on a bright photograph. A second scrim, top to
+   bottom, only under 700px. */
+@media(max-width:700px){
+  .pbanner.img::before{content:'';position:absolute;inset:0;border-radius:inherit;
+    background:linear-gradient(180deg,rgba(10,12,16,.45),rgba(10,12,16,.86))}
+  .pbanner.img > *{position:relative;z-index:1}
+}
+
+/* ---------- news and events listing ---------- */
+/* Three rows rather than two columns of stacked content. The heading and the
+   filter row sit in the left column on their own rows, and the events panel is
+   placed on the same row as the articles, so its top edge starts level with the
+   top of the first article however the heading wraps.
+   Nudging the panel down with a margin would have been one line, but it would
+   have been one line that guessed at the height of two blocks of text and been
+   wrong at the first long heading or the first wrapped filter row. */
+.ne-layout{display:grid;grid-template-columns:1.6fr .9fr;grid-template-rows:auto auto 1fr;
+  column-gap:clamp(20px,2.2vw,34px);row-gap:16px;align-items:start}
+.ne-layout > .head-left{grid-column:1;grid-row:1;margin-bottom:0}
+.ne-layout > .regtop{grid-column:1;grid-row:2;margin-bottom:0}
+.ne-layout > .ne-main{grid-column:1;grid-row:3}
+.ne-layout > .ev-side{grid-column:2;grid-row:3}
+@media(max-width:980px){
+  .ne-layout{grid-template-columns:1fr;grid-template-rows:none;row-gap:clamp(20px,2.2vw,34px)}
+  .ne-layout > .head-left,.ne-layout > .regtop,
+  .ne-layout > .ne-main,.ne-layout > .ev-side{grid-column:auto;grid-row:auto}
+}
+.head-left{text-align:left;margin:0 0 22px;max-width:none}
+.head-left .eyebrow{text-align:left}
+.head-left h2{font-size:clamp(24px,2.6vw,32px)}
+
+.news-feature{display:grid;grid-template-columns:.95fr 1.05fr;gap:0;border-radius:22px;overflow:hidden}
+@media(max-width:820px){.news-feature{grid-template-columns:1fr}}
+.news-feature .pic{min-height:clamp(220px,22vw,340px);background-size:cover;background-position:center}
+.news-feature .fbody{padding:clamp(26px,2.6vw,42px);display:flex;flex-direction:column;justify-content:center}
+.news-feature .fcat{display:inline-block;align-self:flex-start;background:#E40613;color:#fff;font-size:12px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:5px 12px;border-radius:20px;
+  margin-bottom:14px}
+.news-feature .fdate{font-size:13px;color:var(--link);font-weight:700;margin-bottom:10px}
+.news-feature h2{font-size:clamp(22px,2.2vw,30px);font-weight:800;line-height:1.15;margin-bottom:12px}
+.news-feature p{font-size:16px;color:var(--muted);margin-bottom:20px}
+
+.nrow{display:flex;gap:18px;padding:16px;margin-bottom:16px;transition:.16s}
+.nrow:hover{transform:translateY(-3px)}
+.nrow .th{width:190px;height:126px;border-radius:12px;flex:none;background-size:cover;background-position:center}
+.nrow .nb{flex:1;min-width:0}
+.nrow .ndate{font-size:12px;color:var(--link);font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  margin-bottom:6px}
+.nrow h4{font-size:19px;font-weight:800;line-height:1.25;margin-bottom:8px}
+.nrow p{font-size:14px;color:var(--muted);margin-bottom:8px}
+.nrow .more{color:var(--link);font-weight:700;font-size:14px}
+@media(max-width:640px){.nrow{flex-direction:column}.nrow .th{width:100%;height:180px}}
+
+.ev-side{position:sticky;top:96px;padding:24px}
+@media(max-width:980px){.ev-side{position:relative;top:0}}
+.ev-side h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.ev-side .subh{font-size:13px;color:var(--muted);margin-bottom:14px}
+.evc{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--glass-soft-bd)}
+.evc:last-of-type{border-bottom:none}
+.evc .ed{flex:none;width:54px;height:58px;border-radius:11px;background:rgba(228,6,19,.16);
+  border:1px solid rgba(228,6,19,.45);color:#fff;display:flex;flex-direction:column;align-items:center;
+  justify-content:center}
+.evc .ed .d{font-size:20px;font-weight:800;line-height:1}
+.evc .ed .m{font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.evc .et{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--link);
+  margin-bottom:2px}
+.evc h5{font-size:15px;font-weight:700;line-height:1.3}
+.evc .em{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* A full width event row, used where events are the whole page rather than a
+   sidebar. Same information, more room. */
+.eventlist{display:flex;flex-direction:column;gap:14px}
+.event{display:flex;gap:20px;align-items:center;padding:18px 22px;transition:.16s}
+.event:hover{transform:translateY(-2px)}
+.edate{flex:none;width:72px;height:76px;border-radius:14px;background:#E40613;color:#fff;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(228,6,19,.3)}
+.edate .d{font-size:26px;font-weight:800;line-height:1}
+.edate .m{font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.einfo{flex:1;min-width:0}
+.einfo .etype{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--link);
+  margin-bottom:4px}
+.einfo h4{font-size:18px;font-weight:700;margin-bottom:4px}
+.einfo .emeta{font-size:13px;color:var(--muted)}
+.event .btn{flex:none}
+@media(max-width:640px){.event{flex-wrap:wrap}}
+
+/* ---------- the article ---------- */
+/* The panel runs the full width of the page, so it lines up with the banner above
+   it rather than sitting in the middle looking like a different page.
+   The PROSE inside it does not. A line of text 1,600 pixels wide is unreadable
+   however handsome the panel is, so the words are held to about 72 characters and
+   the space that leaves is used for the share row and anything else that belongs
+   beside an article rather than in it. */
+.article{max-width:none;margin:26px 0 0;padding:clamp(28px,3vw,46px)}
+.article-grid{display:grid;grid-template-columns:minmax(0,72ch) minmax(0,290px);
+  gap:clamp(28px,4vw,72px);justify-content:space-between;align-items:start}
+@media(max-width:1080px){
+  .article-grid{grid-template-columns:1fr;gap:26px}
+  .article-aside{border-top:1px solid var(--glass-soft-bd);padding-top:22px}
+}
+.article-aside{position:sticky;top:96px}
+@media(max-width:1080px){.article-aside{position:relative;top:0}}
+.article-aside h4{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;
+  color:var(--muted);margin-bottom:12px}
+.article-aside .share{margin-top:0;margin-bottom:26px}
+.article-aside .meta-list{list-style:none;font-size:14px;color:var(--muted)}
+.article-aside .meta-list li{padding:9px 0;border-bottom:1px solid var(--glass-soft-bd)}
+.article-aside .meta-list li:last-child{border-bottom:none}
+.article-aside .meta-list b{display:block;color:#fff;font-weight:700;font-size:11px;
+  letter-spacing:1.2px;text-transform:uppercase;margin-bottom:2px}
+.article p{font-size:17px;color:var(--txt);margin-bottom:20px;line-height:1.7}
+.article h3{font-size:24px;font-weight:800;margin:14px 0 12px}
+.article .lead{font-size:20px;color:var(--muted);font-weight:500}
+.article figure{margin:26px 0}
+.article figure .pic{height:360px;border-radius:16px;background-size:cover;background-position:center}
+.article figcaption{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
+.article blockquote{border-left:4px solid #E40613;padding:6px 0 6px 22px;margin:26px 0;font-size:22px;
+  font-weight:700;line-height:1.4}
+.article ul,.article ol{margin:0 0 20px 1.3em;font-size:17px;line-height:1.7}
+.article li{margin-bottom:.4em}
+.article a{color:var(--link);font-weight:600;text-decoration:underline}
+.share{display:flex;gap:10px;align-items:center;margin-top:30px;font-size:14px;color:var(--muted);
+  flex-wrap:wrap}
+.share a{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;
+  justify-content:center;background:var(--glass-soft);border:1px solid var(--glass-soft-bd);
+  font-weight:700;font-size:13px;transition:.15s}
+.share a:hover{background:#E40613;border-color:#E40613;color:#fff}
+
+/* ---------- the video library ---------- */
+.vhero{display:grid;grid-template-columns:1.25fr .75fr;gap:0;overflow:hidden;border-radius:22px;cursor:pointer}
+@media(max-width:900px){.vhero{grid-template-columns:1fr}}
+.vhero .vthumb{min-height:clamp(220px,24vw,380px)}
+.vhero-txt{padding:clamp(26px,2.8vw,44px);display:flex;flex-direction:column;justify-content:center}
+.vhero-txt .vcat{color:var(--link);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;
+  font-weight:700;margin-bottom:12px}
+.vhero-txt h2{font-size:clamp(22px,2.2vw,28px);font-weight:800;line-height:1.15;margin-bottom:12px}
+.vhero-txt p{color:var(--muted);font-size:16px;margin-bottom:22px}
+.vthumb{position:relative;background-size:cover;background-position:center;display:flex;
+  align-items:center;justify-content:center}
+.playbtn{width:82px;height:82px;border-radius:50%;background:rgba(228,6,19,.92);display:flex;
+  align-items:center;justify-content:center;box-shadow:0 12px 34px rgba(0,0,0,.55);transition:.18s}
+.playbtn svg{width:34px;height:34px;margin-left:4px}
+.playbtn.sm{width:56px;height:56px}
+.playbtn.sm svg{width:22px;height:22px}
+.vcard:hover .playbtn,.vhero:hover .playbtn{transform:scale(1.08);background:#E40613}
+.dur{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;
+  font-weight:700;padding:4px 10px;border-radius:6px}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,1.6vw,28px)}
+@media(max-width:980px){.vgrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.vgrid{grid-template-columns:1fr}}
+.vcard{overflow:hidden;cursor:pointer;transition:.18s;display:block}
+.vcard:hover{transform:translateY(-5px)}
+.vcard .vthumb{height:190px}
+.vbody{padding:18px 20px}
+.vbody .vcat{color:var(--link);font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  font-weight:700;margin-bottom:6px}
+.vbody h4{font-size:16px;font-weight:700;line-height:1.35}
+.vmodal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:24px}
+.vmodal.open{display:flex}
+.vmodal-inner{width:100%;max-width:960px;padding:14px;position:relative}
+.vframe{position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;background:#000}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vclose{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;background:#E40613;
+  color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4);
+  font-family:inherit;line-height:1}
+
+/* ---------- the register, as a table ---------- */
+.regtop{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  margin-bottom:18px}
+.regsearch{display:flex;gap:10px;flex-wrap:wrap}
+.regsearch input,.regsearch select{padding:11px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.12);
+  background:rgba(255,255,255,.95);color:#171416;font-size:14px;font-family:inherit;outline:none}
+.regsearch input{min-width:min(260px,60vw)}
+.regsearch input:focus,.regsearch select:focus{border-color:#E40613;box-shadow:0 0 0 3px rgba(228,6,19,.25)}
+.regsearch select option{color:#111}
+.reg-wrap{padding:4px 6px;overflow-x:auto}
+.rtable{width:100%;border-collapse:collapse;min-width:820px}
+.rtable thead th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);font-weight:700;padding:16px 18px;border-bottom:1px solid var(--glass-soft-bd)}
+.rtable tbody td{padding:13px 18px;font-size:14px;border-bottom:1px solid var(--glass-soft-bd);
+  vertical-align:middle;color:var(--txt)}
+.rtable tbody tr:last-child td{border-bottom:none}
+.rtable tbody tr{transition:.12s}
+.rtable tbody tr:hover{background:rgba(255,255,255,.05)}
+.rref{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--muted)}
+.rname{display:flex;align-items:center;gap:12px}
+.rname .rav{width:36px;height:36px;border-radius:9px;background-size:cover;background-position:center;
+  flex:none;border:1px solid var(--glass-bd);background-color:rgba(255,255,255,.09);display:flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--link)}
+.rname a{color:#fff}
+.rname a:hover b{color:var(--link)}
+.rjoined{color:var(--muted);white-space:nowrap}
+.rtype{font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:20px;display:inline-block;
+  white-space:nowrap}
+.rt-fellow{background:#E40613;color:#fff}
+.rt-full{background:rgba(228,6,19,.18);border:1px solid rgba(228,6,19,.45);color:#fff}
+.rt-assoc{background:rgba(255,255,255,.08);border:1px solid var(--glass-soft-bd);color:var(--muted)}
+.rt-cpq{background:rgba(255,255,255,.04);border:1px solid var(--glass-soft-bd);color:var(--link)}
+.rpage{display:flex;gap:8px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+.rpage a,.rpage button{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:14px;border:1px solid var(--glass-soft-bd);
+  color:var(--muted);background:transparent;cursor:pointer;font-family:inherit}
+.rpage .on{background:#E40613;color:#fff;border-color:#E40613}
+.rpage a:hover,.rpage button:hover{border-color:#E40613;color:#fff}
+.rpage .gap{border:none;cursor:default;color:var(--muted)}
+.rpage .gap:hover{border:none;color:var(--muted)}
+/* On a telephone a five column table is a horizontal scroll nobody finds. The
+   two columns that answer the question, who is this and what grade are they, stay
+   and the rest go. The full record is one tap away on the member's own page. */
+@media(max-width:700px){
+  .rtable{min-width:0}
+  .rtable th:nth-child(3),.rtable td:nth-child(3),
+  .rtable th:nth-child(5),.rtable td:nth-child(5){display:none}
+  .rtable thead th,.rtable tbody td{padding:12px 10px}
+  .regsearch{width:100%}
+  .regsearch input,.regsearch select{flex:1;min-width:0}
+}
+
+/* ---------- contact ---------- */
+.contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,2vw,30px);align-items:start}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
+.formcard{padding:clamp(24px,2.4vw,36px)}
+.formcard h3{font-size:20px;font-weight:800;margin-bottom:6px}
+.formcard .fsub{font-size:14px;color:var(--muted);margin-bottom:22px}
+.contact-info{padding:14px clamp(20px,2.2vw,32px)}
+.contact-info .row{display:flex;gap:16px;align-items:flex-start;padding:20px 0;
+  border-bottom:1px solid var(--glass-soft-bd)}
+.contact-info .row:last-child{border-bottom:none}
+.ci-ic{width:44px;height:44px;border-radius:12px;background:#E40613;display:flex;align-items:center;
+  justify-content:center;flex:none;box-shadow:0 6px 16px rgba(228,6,19,.3)}
+.ci-ic svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;
+  stroke-linejoin:round}
+.contact-info h5{font-size:15px;font-weight:800;margin-bottom:3px}
+.contact-info p{font-size:14px;color:var(--muted);line-height:1.5}
+.contact-info a{color:var(--link)}
+
+/* ---------- login ---------- */
+.login-wrap{max-width:460px;margin:8px auto 0}
+.login-card{padding:clamp(28px,3vw,40px) clamp(24px,2.6vw,36px)}
+.login-card h2{font-size:26px;font-weight:800;text-align:center;margin-bottom:6px}
+.login-card .lsub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:26px}
+.login-card .btn{width:100%;text-align:center}
+.row-between{display:flex;justify-content:space-between;align-items:center;margin:2px 0 18px;
+  font-size:13px;gap:12px;flex-wrap:wrap}
+.row-between a{color:var(--link);font-weight:600}
+.row-between label{display:flex;align-items:center;gap:7px;color:var(--muted);margin:0;
+  font-size:13px;letter-spacing:0;text-transform:none}
+.row-between input{width:auto}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;text-transform:uppercase;
+  letter-spacing:1px;margin:20px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--glass-soft-bd)}
+.login-foot{text-align:center;font-size:14px;color:var(--muted);margin-top:24px}
+.login-foot a{color:var(--link);font-weight:700}
+.mfa-note{text-align:center;font-size:12px;color:var(--muted);margin-top:18px}
+
+/* ---------- a locked panel ---------- */
+/* Used where a page shows a members only thing to somebody who is not signed in.
+   It says what is behind it rather than hiding that it exists. */
+.lockpill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:var(--link);margin-bottom:12px}
+
+
+/* =============================================================================
+   THE MEMBERS AREA
+
+   Everything below is behind a sign in. It is the same design system as the
+   public site, the same glass on the same graphite, because a member arriving
+   from the home page should not feel they have gone somewhere else.
+
+   What changes is the density. A public page is read once and persuades. A
+   members page is used, so the panels are tighter, the tables carry more, and
+   nothing animates that a person has to wait for.
+   ============================================================================= */
+
+/* ---------- the sub navigation ---------- */
+/* Six destinations, always visible, so a member is never more than one tap from
+   any of them. It scrolls sideways on a telephone rather than wrapping into three
+   rows and pushing the page down. */
+.msub{display:flex;gap:8px;margin:22px 0 26px;padding:8px;border-radius:34px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.msub::-webkit-scrollbar{display:none}
+.msub a{font-size:14px;font-weight:700;padding:10px 20px;border-radius:28px;color:var(--muted);
+  white-space:nowrap;flex:none}
+.msub a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.msub a.on{background:#E40613;color:#fff}
+
+/* ---------- the welcome panel ---------- */
+.mwelcome{display:flex;gap:26px;align-items:center;padding:26px 30px;flex-wrap:wrap}
+.mwelcome .mug{width:92px;height:92px;border-radius:20px;flex:none;background-size:cover;
+  background-position:center;border:1px solid var(--glass-bd);background-color:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;
+  color:var(--link);letter-spacing:-1px}
+.mwelcome .who{flex:1;min-width:220px}
+.mwelcome h1{font-size:clamp(24px,2.6vw,32px);font-weight:800;letter-spacing:-.5px}
+.mwelcome .sub{font-size:14px;color:var(--muted);margin-top:6px}
+.mwelcome .badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.mwelcome .meta{flex:none;text-align:right;font-size:13px;color:var(--muted);line-height:1.9}
+.mwelcome .meta b{color:#fff;font-weight:700;display:block;font-size:15px}
+@media(max-width:760px){.mwelcome .meta{text-align:left}}
+
+/* ---------- the tiles ---------- */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:clamp(14px,1.4vw,22px);margin-top:22px}
+.tile{padding:26px 24px;display:block;transition:.18s}
+.tile:hover{transform:translateY(-5px)}
+.tile .ic{width:48px;height:48px;border-radius:13px;background:#E40613;display:flex;
+  align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 8px 20px rgba(228,6,19,.32)}
+.tile .ic svg{width:23px;height:23px;fill:none;stroke:#fff;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.tile h3{font-size:18px;font-weight:800;margin-bottom:7px}
+.tile p{font-size:14px;color:var(--muted);margin-bottom:14px}
+.tile .more{font-size:14px;font-weight:700;color:var(--link)}
+
+/* ---------- two columns, main and aside ---------- */
+.mgrid{display:grid;grid-template-columns:1fr .78fr;gap:clamp(20px,2.2vw,34px);align-items:start}
+@media(max-width:980px){.mgrid{grid-template-columns:1fr}}
+
+/* The same two columns with the heading on a row of its own above them, so a
+   panel in the right column starts level with the first panel in the left and
+   not level with the heading. Three children: heading, main, aside. */
+.me-layout{display:grid;grid-template-columns:1fr .78fr;gap:clamp(20px,2.2vw,34px);
+  align-items:start}
+.me-layout>.sec-head{grid-column:1/-1;margin-bottom:calc(-1 * clamp(20px,2.2vw,34px) + 14px)}
+@media(max-width:980px){.me-layout{grid-template-columns:1fr}}
+
+/* ---------- a row of recent things ---------- */
+.trow{display:flex;gap:16px;align-items:flex-start;padding:16px 20px;margin-bottom:12px;
+  transition:.16s}
+a.trow:hover{transform:translateY(-2px)}
+.trow .tav{width:42px;height:42px;border-radius:11px;flex:none;background-size:cover;
+  background-position:center;border:1px solid var(--glass-bd);background-color:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+  color:var(--link)}
+.trow .tb{flex:1;min-width:0}
+.trow h4{font-size:16px;font-weight:700;line-height:1.35;margin-bottom:5px}
+.trow .tm{font-size:12.5px;color:var(--muted)}
+.trow .tr{flex:none;text-align:center;font-size:11px;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.5px;font-weight:700}
+.trow .tr b{display:block;font-size:19px;color:#fff;font-weight:800;letter-spacing:0}
+
+/* ---------- a panel of plain words beside a thing ---------- */
+.callout{padding:20px 24px;border-radius:16px;background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-soft-bd);font-size:14px;color:var(--muted);line-height:1.6;
+  margin-top:18px}
+.callout b{color:#fff}
+.callout:first-child{margin-top:0}
+
+/* ---------- CPD, the two rings ---------- */
+/* Two numbers decide whether a member is compliant, so they are the two biggest
+   things on the page and everything else explains them. */
+.rings{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;
+  padding:30px;align-items:center}
+.ring{text-align:center}
+.ring svg{width:150px;height:150px;transform:rotate(-90deg)}
+.ring .track{fill:none;stroke:rgba(255,255,255,.10);stroke-width:13}
+.ring .fill{fill:none;stroke-width:13;stroke-linecap:round;
+  transition:stroke-dashoffset .9s cubic-bezier(.22,1,.36,1)}
+.ring .mid{position:relative;display:inline-block}
+.ring .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;line-height:1.1}
+.ring .val{padding:0 30px}
+.ring .val .n{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1}
+/* The hole in the middle of a 150px ring with a 13px stroke is about 118px wide.
+   Anything wider than that runs over the stroke and looks like a fault. What the
+   points ARE is said by the heading directly underneath, so this says how many
+   out of how many and nothing else. */
+.ring .val .of{font-size:12.5px;color:var(--muted);font-weight:700;letter-spacing:.6px;
+  text-transform:uppercase;margin-top:3px;white-space:nowrap}
+.ring h4{font-size:16px;font-weight:800;margin-top:10px}
+.ring p{font-size:13px;color:var(--muted);margin-top:4px}
+.ring-side{border-left:1px solid var(--glass-soft-bd);padding-left:26px}
+@media(max-width:900px){
+  .ring-side{border-left:none;padding-left:0;border-top:1px solid var(--glass-soft-bd);
+    padding-top:22px}
+}
+.ring-side .line{display:flex;justify-content:space-between;gap:14px;font-size:14px;
+  padding:10px 0;border-bottom:1px solid var(--glass-soft-bd)}
+.ring-side .line:last-of-type{border-bottom:none}
+.ring-side .line span{color:var(--muted)}
+.ring-side .line b{font-weight:700}
+
+/* ---------- CPD, the year ---------- */
+.bars{display:flex;align-items:flex-end;gap:clamp(6px,1vw,16px);height:190px;padding:30px 26px 0}
+.bars .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  height:100%;gap:6px}
+.bars .stack{width:100%;max-width:44px;display:flex;flex-direction:column;justify-content:flex-end}
+.bars .seg{width:100%;background:rgba(255,255,255,.14);border:1px solid var(--glass-soft-bd);
+  position:relative}
+.bars .seg.core{background:#E40613;border-color:#E40613}
+.bars .stack .seg:first-child{border-radius:8px 8px 0 0}
+.bars .stack .seg:last-child{border-bottom:none}
+.bars .cnt{position:absolute;top:-22px;left:0;right:0;text-align:center;font-size:12px;
+  font-weight:800;color:#fff}
+.bars .lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;padding:16px 26px 26px;font-size:13px;
+  color:var(--muted);align-items:center}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:7px;
+  vertical-align:-1px}
+
+/* ---------- CPD, the log ---------- */
+.ltable{width:100%;border-collapse:collapse;min-width:900px}
+.ltable thead th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);font-weight:700;padding:15px 18px;border-bottom:1px solid var(--glass-soft-bd)}
+.ltable tbody td{padding:14px 18px;font-size:14px;border-bottom:1px solid var(--glass-soft-bd);
+  vertical-align:middle}
+.ltable tbody tr:last-child td{border-bottom:none}
+.ltable tbody tr:hover{background:rgba(255,255,255,.05)}
+.ltable .pts{font-weight:800;font-size:15px}
+.ltable .ev a{color:var(--link);font-weight:600}
+.ltable .when{color:var(--muted);white-space:nowrap}
+.howp{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:4px 11px;
+  border-radius:20px;display:inline-block;white-space:nowrap;background:rgba(255,255,255,.07);
+  border:1px solid var(--glass-soft-bd);color:var(--muted)}
+.howp.auto{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.4);color:#9df3bd}
+.howp.ami{background:rgba(228,6,19,.2);border-color:rgba(228,6,19,.5);color:#fff}
+.badge-t.wait{background:rgba(255,201,120,.14);border-color:rgba(255,201,120,.4);color:#ffc978;
+  white-space:nowrap}
+.tblwrap{padding:4px 6px;overflow-x:auto}
+/* On a telephone the type and the evidence go. What is left answers the question a
+   member opens this table to ask: what did I do, when, and does it count yet. */
+@media(max-width:760px){
+  .ltable{min-width:0}
+  .ltable th:nth-child(3),.ltable td:nth-child(3),
+  .ltable th:nth-child(6),.ltable td:nth-child(6){display:none}
+  .ltable thead th,.ltable tbody td{padding:12px 10px}
+}
+
+/* ---------- the membership card ---------- */
+.cardgrid{display:grid;grid-template-columns:400px 1fr;gap:clamp(22px,2.4vw,40px);align-items:start}
+@media(max-width:900px){.cardgrid{grid-template-columns:1fr}}
+.mcard-face{width:100%;max-width:400px;border-radius:24px;overflow:hidden;
+  background:linear-gradient(165deg,#20252e,#12151b);border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.mcard-face .cbrand{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.mcard-face .cbrand img{height:26px;width:auto}
+.mcard-face .cbrand .st{font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 11px;border-radius:20px;background:rgba(74,222,128,.18);color:#9df3bd;
+  border:1px solid rgba(74,222,128,.4)}
+.mcard-face .cbrand .st.off{background:rgba(255,255,255,.08);color:var(--muted);
+  border-color:var(--glass-soft-bd)}
+/* Three to one, because that is the shape Apple draws across the top of a store
+   card and the web version has to be the same card. */
+.mcard-face .strip{aspect-ratio:3/1;position:relative;background-size:cover;
+  background-position:center;background-color:#12151b;display:flex;align-items:center;
+  justify-content:center}
+/* The dark wash that used to live here as a ::after is now painted INTO the
+   picture by crop.js, because an Apple Wallet pass draws its own lettering over
+   the strip and gives nothing a chance to sit between the two. One wash, on the
+   one surface both the site and the pass share. Putting this back applies it
+   twice and takes the face to black. 23 August 2026. */
+.mcard-face .strip .scopes{position:relative;z-index:2;font-size:13px;font-weight:700;
+  color:#fff;text-align:center;padding:0 20px;line-height:1.5}
+.mcard-face .strip .brandonly{position:relative;z-index:2;opacity:.5}
+.mcard-face .strip .brandonly img{height:34px}
+/* The name below the picture rather than over it. A wallet pass cannot put
+   anything between the photograph and its own lettering, so the name comes off
+   the photograph on both, and the site card and the pass stay one card. */
+.mcard-face .cname{padding:14px 20px 0}
+.mcard-face .cname .gr{display:block;font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.1px;color:#ff9ba2;margin-bottom:2px}
+.mcard-face .cname .nm{display:block;font-size:21px;font-weight:800;letter-spacing:-.4px}
+.mcard-face .crows{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px 20px}
+.mcard-face .crows .k{font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;
+  color:#9aa3b0;display:block;margin-bottom:3px}
+.mcard-face .crows .v{font-size:15px;font-weight:700;display:block}
+.mcard-face .qr{padding:6px 20px 22px;text-align:center}
+.mcard-face .qr .box{width:132px;height:132px;margin:0 auto 10px;background:#fff;border-radius:12px;
+  padding:9px}
+.mcard-face .qr .box canvas,.mcard-face .qr .box svg{width:100%;height:100%;display:block;
+  image-rendering:pixelated}
+.mcard-face .qr p{font-size:11.5px;color:#9aa3b0;line-height:1.5}
+
+.wbtn{display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:16px;
+  background:rgba(255,255,255,.05);border:1px solid var(--glass-soft-bd);margin-bottom:12px}
+.wbtn .wic{width:44px;height:44px;border-radius:11px;flex:none;display:flex;align-items:center;
+  justify-content:center;background:#000;color:#fff;font-weight:800;font-size:19px}
+.wbtn .wic.g{background:#fff;color:#1a73e8}
+.wbtn .wt{flex:1;min-width:0}
+.wbtn .wt b{display:block;font-size:15px;font-weight:800}
+.wbtn .wt span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+@media(max-width:520px){.wbtn{flex-wrap:wrap}.wbtn .btn{width:100%;text-align:center}}
+
+
+/* ---------- the three card fronts ---------- */
+/* Which one a member gets depends on what AMI holds rather than on anything they
+   choose, so all three are shown and the one that is theirs says so. */
+.states{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.state-c{padding:18px;text-align:center}
+.state-c .mini{height:104px;border-radius:12px;margin-bottom:12px;
+  border:1px solid var(--glass-soft-bd);display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--muted);text-align:center;padding:10px;
+  background-size:cover;background-position:center;background-color:#12151b}
+.state-c h5{font-size:14px;font-weight:800;margin-bottom:5px}
+.state-c p{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+/* ---------- the public verification page ---------- */
+.verify{max-width:640px;margin:0 auto;padding:clamp(28px,3vw,44px);text-align:center}
+.verify .tick{width:74px;height:74px;border-radius:50%;margin:0 auto 20px;display:flex;
+  align-items:center;justify-content:center;background:rgba(74,222,128,.16);
+  border:1px solid rgba(74,222,128,.45)}
+.verify .tick svg{width:36px;height:36px;fill:none;stroke:#4ade80;stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+/* The same panel, answering no. It has to be as clear and as calm as the yes, or
+   a duty holder reads uncertainty into it. */
+.verify .tick.no{background:rgba(255,201,120,.14);border-color:rgba(255,201,120,.45)}
+.verify .tick.no svg{stroke:#ffc978}
+.verify h1{font-size:clamp(26px,3vw,34px);font-weight:800;margin-bottom:8px}
+.verify .said{font-size:16px;color:var(--muted);margin-bottom:26px}
+.verify .facts{text-align:left;margin-top:0}
+.verify .foot{font-size:13px;color:var(--muted);margin-top:26px;line-height:1.6}
+
+/* ---------- the forum ---------- */
+.fcat{display:flex;gap:18px;align-items:center;padding:20px 22px;margin-bottom:14px;transition:.16s}
+a.fcat:hover{transform:translateY(-3px)}
+.fcat .fic{width:50px;height:50px;border-radius:13px;flex:none;background:#E40613;display:flex;
+  align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(228,6,19,.3);
+  font-weight:800;font-size:19px;color:#fff}
+.fcat .fic svg{width:23px;height:23px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;
+  stroke-linejoin:round}
+.fcat .fb{flex:1;min-width:0}
+.fcat h4{font-size:17px;font-weight:800;margin-bottom:4px}
+.fcat p{font-size:13.5px;color:var(--muted)}
+.fcat .fn{flex:none;text-align:right;font-size:12px;color:var(--muted);line-height:1.7}
+.fcat .fn b{display:block;color:#fff;font-size:18px;font-weight:800}
+@media(max-width:620px){.fcat{flex-wrap:wrap}.fcat .fn{text-align:left}}
+
+.post{padding:24px 26px;margin-bottom:16px}
+.post.first{border-color:rgba(228,6,19,.4)}
+.post.held{border-color:rgba(255,201,120,.45)}
+.post .ph-head{display:flex;gap:14px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.post .pav{width:48px;height:48px;border-radius:12px;flex:none;background-size:cover;
+  background-position:center;background-color:rgba(255,255,255,.08);border:1px solid var(--glass-bd);
+  display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--link)}
+.post .pw{flex:1;min-width:150px}
+.post .pw b{font-size:15px;font-weight:800;display:block}
+.post .pw a:hover b{color:var(--link)}
+.post .pw span{font-size:12.5px;color:var(--muted)}
+.post .pt{font-size:12.5px;color:var(--muted);flex:none}
+.post .pbody{font-size:15.5px;line-height:1.7;color:#e8ecf2;overflow-wrap:anywhere}
+.post .pbody p{margin-bottom:14px}
+.post .pbody p:last-child{margin-bottom:0}
+.post .pbody ul,.post .pbody ol{margin:0 0 14px 1.3em}
+.post .pbody a{color:var(--link);font-weight:600;text-decoration:underline}
+.post .pfoot{display:flex;gap:14px;align-items:center;margin-top:18px;padding-top:16px;
+  border-top:1px solid var(--glass-soft-bd);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.post .pfoot button{background:none;border:none;color:var(--link);font-weight:700;font-size:13px;
+  cursor:pointer;font-family:inherit;padding:0}
+.post .pfoot button:hover{text-decoration:underline}
+.post .pfoot .locked{margin-left:auto;font-size:12.5px}
+
+/* ---------- the profile ---------- */
+.prof-grid{display:grid;grid-template-columns:300px 1fr;gap:clamp(22px,2.4vw,36px);align-items:start}
+@media(max-width:860px){.prof-grid{grid-template-columns:1fr}}
+.photo-box{padding:24px;text-align:center}
+.photo-box .pimg{width:100%;aspect-ratio:1;border-radius:18px;background-size:cover;
+  background-position:center;border:1px solid var(--glass-bd);margin-bottom:16px;
+  background-color:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;
+  font-size:60px;font-weight:800;color:var(--link);letter-spacing:-2px}
+.switches{padding:6px 24px}
+.switches .sw{display:flex;gap:18px;align-items:flex-start;padding:20px 0;
+  border-bottom:1px solid var(--glass-soft-bd)}
+.switches .sw:last-child{border-bottom:none}
+.switches .sw .st{flex:1;min-width:0}
+.switches .sw h5{font-size:15px;font-weight:800;margin-bottom:4px}
+.switches .sw p{font-size:13.5px;color:var(--muted);line-height:1.55}
+/* A real button, not a styled div, so it can be reached by tab and pressed by a
+   keyboard and read out as a switch. */
+.toggle{flex:none;width:52px;height:30px;border-radius:20px;background:rgba(255,255,255,.12);
+  border:1px solid var(--glass-bd);position:relative;cursor:pointer;transition:.18s;margin-top:2px;
+  padding:0;font-family:inherit}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+  background:#fff;transition:.18s}
+.toggle[aria-checked="true"]{background:#E40613;border-color:#E40613}
+.toggle[aria-checked="true"]::after{left:27px}
+.toggle:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.toggle[disabled]{opacity:.5;cursor:progress}
+
+/* ---------- the photograph cropper ---------- */
+.croplay{display:grid;grid-template-columns:minmax(0,460px) 1fr;gap:clamp(22px,2.4vw,38px);
+  align-items:start}
+@media(max-width:880px){.croplay{grid-template-columns:1fr}}
+.cropcard{padding:22px}
+.cropstage{position:relative;width:100%;aspect-ratio:1;border-radius:18px;overflow:hidden;
+  background:#0a0c10;border:1px solid var(--glass-bd);touch-action:none;cursor:grab}
+.cropstage.drag{cursor:grabbing}
+.cropstage canvas{display:block;width:100%;height:100%}
+.cropstage .band{position:absolute;left:0;right:0;pointer-events:none;
+  border-top:2px solid #E40613;border-bottom:2px solid #E40613;
+  box-shadow:0 0 0 9999px rgba(10,12,16,.42)}
+.cropstage .band b{position:absolute;top:6px;left:10px;font-size:10.5px;font-weight:800;
+  letter-spacing:1.1px;text-transform:uppercase;color:#fff;background:#E40613;padding:3px 9px;
+  border-radius:20px}
+.cropstage .empty{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:14px;
+  text-align:center;padding:24px}
+.cropctl{margin-top:18px}
+.cropctl .cl{display:flex;justify-content:space-between;font-size:11.5px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:0 2px 8px}
+.cropctl input[type=range]{width:100%;accent-color:#E40613;height:26px}
+.cropbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+.prevrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+.prev{padding:16px;text-align:center}
+.prev .pk{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px}
+.prev canvas{display:block;margin:0 auto;border-radius:12px;background:#0a0c10;
+  border:1px solid var(--glass-soft-bd)}
+.prev .pn{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+.prevcard{max-width:300px;margin:0 auto;border-radius:14px;overflow:hidden;
+  background:linear-gradient(165deg,#20252e,#12151b);border:1px solid rgba(255,255,255,.16)}
+.prevcard canvas{border-radius:0;border:none;width:100%;display:block}
+/* Below the picture, not over it, so this preview shows the card as it will
+   actually be rather than a version of it that only works on a dark photograph. */
+.prevcard .pcn{position:relative;padding:11px 14px 13px;text-align:left;z-index:2}
+.prevcard .pcn .g{font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  color:#ff9ba2;margin-bottom:2px}
+.prevcard .pcn .n{font-size:16px;font-weight:800;letter-spacing:-.3px}
+
+/* ---------- a numbered list of what happens ---------- */
+.steps-n{counter-reset:s;list-style:none}
+.steps-n li{position:relative;padding:12px 0 12px 42px;font-size:15px;color:var(--muted);
+  border-bottom:1px solid var(--glass-soft-bd)}
+.steps-n li:last-child{border-bottom:none}
+.steps-n li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:10px;
+  width:28px;height:28px;border-radius:50%;background:#E40613;color:#fff;font-weight:800;
+  font-size:13px;display:flex;align-items:center;justify-content:center}
+.steps-n li b{color:#fff;font-weight:700}
+
+/* ---------- the card, on paper ---------- */
+/* A site office at a gate sometimes wants something on paper, and the answer to
+   that is not "print the web page". A dark card printed on white paper is a
+   rectangle of ink and a QR code that a scanner struggles with, so print gets its
+   own light version of the same card and everything else is hidden. */
+.printcard{display:none}
+@media print{
+  body{background:#fff !important}
+  body > *{display:none !important}
+  .printcard{display:block !important;color:#111;font-family:'Plus Jakarta Sans',Arial,sans-serif;
+    padding:0;margin:0}
+  .printcard .pc{width:90mm;border:1px solid #999;border-radius:6mm;padding:8mm;
+    page-break-inside:avoid}
+  .printcard .pc h1{font-size:20pt;font-weight:800;margin:0 0 1mm}
+  .printcard .pc .g{font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:1pt;
+    color:#B50410;margin-bottom:5mm}
+  .printcard .pc .row{display:flex;justify-content:space-between;font-size:9pt;
+    padding:1.6mm 0;border-bottom:1px solid #ddd}
+  .printcard .pc .row:last-of-type{border-bottom:none}
+  .printcard .pc .row b{font-weight:700}
+  .printcard .pc .qr{margin:6mm auto 2mm;width:34mm}
+  .printcard .pc .qr canvas,.printcard .pc .qr img{width:100%;display:block}
+  .printcard .pc .foot{font-size:7.5pt;color:#555;text-align:center;line-height:1.4}
+  .printcard .pc .brand{height:9mm;margin-bottom:5mm}
+}
+
+/* The CPD form says what an activity is worth (0038). */
+.formcard .worth{padding:12px 0 4px;font-size:15px;color:var(--muted)}
+.formcard .worth b{color:#fff}
+.formcard textarea#refl{min-height:220px}
+
+/* ---------- two across: committees, governance (site 83) ---------- */
+.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+/* An odd card out spans the row rather than leaving a hole beside it. */
+.cards2 > :last-child:nth-child(odd){grid-column:1 / -1}
+.cards2 .qcard ul{margin:12px 0 0 18px;color:var(--muted);font-size:15px;line-height:1.7}
+@media(max-width:820px){.cards2{grid-template-columns:1fr}}
+
+/* ---------- the guidance documents page (site 83) ---------- */
+.doclist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:22px}
+.doc{padding:24px;display:flex;flex-direction:column;gap:12px}
+.doc-top{display:flex;gap:16px;align-items:flex-start}
+.doc-top .qicon{flex:none;margin:0}
+.doc h3{font-size:19px;font-weight:800;line-height:1.3}
+.doc-meta{font-size:13px;color:var(--muted);margin-top:4px}
+.doc p{color:var(--muted);font-size:15px}
+.doc-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+@media(max-width:820px){.doclist{grid-template-columns:1fr}}
+
+/* The intro on professional conduct carries a list inside a list. */
+#intro ul{margin:10px 0 14px 20px}
+#intro ul ul{margin:4px 0 4px 20px}
+#intro li{margin:4px 0}

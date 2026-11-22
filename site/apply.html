@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application for membership | AMI</title>
+<meta name="description" content="Apply for membership of the Asbestos Management Institute. Your application will be assessed and the appropriate grade confirmed. Nothing is charged online.">
+<link rel="preconnect" href="https://ttjvwxxtoidiiejyqmbc.supabase.co" crossorigin>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/favicon-32.png?v=70" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/favicon-16.png?v=70" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=70">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" as="font" type="font/woff2" href="/assets/jakarta.woff2?v=70" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=83">
+</head>
+<body data-nav="/membership" data-page="apply">
+
+<main id="main"><div class="wrap">
+  <section class="pbanner">
+    <div class="crumb"><a href="/">Home</a> &nbsp;&rsaquo;&nbsp; <b>Join AMI</b></div>
+    <div class="eyebrow">Membership</div>
+    <h1>Application for membership</h1>
+    <p>Complete this form and attach copies of the relevant certificates, diplomas and
+       qualifications. Your application will be assessed and the appropriate grade of membership
+       confirmed. An invoice for the fee for that grade will then be sent to the address you give
+       at the bottom of this form.</p>
+    <p style="font-size:15px"><a href="/contact" style="color:var(--link);font-weight:700">Contact
+       head office</a> for further details if required.</p>
+  </section>
+
+  <section style="padding-top:20px">
+    <form class="stack glass" id="form" method="post" novalidate style="padding:clamp(22px,3vw,40px);max-width:820px"
+          enctype="multipart/form-data">
+
+      <fieldset class="fset">
+        <legend>Your details</legend>
+        <div class="two">
+          <div class="field">
+            <label for="given">First name <span aria-hidden="true">*</span></label>
+            <input type="text" id="given" name="given" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="family">Surname <span aria-hidden="true">*</span></label>
+            <input type="text" id="family" name="family" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="dob">Date of birth <span aria-hidden="true">*</span></label>
+            <input type="date" id="dob" name="dob" autocomplete="bday" required>
+          </div>
+          <div class="field">
+            <label for="telephone">Mobile telephone <span aria-hidden="true">*</span></label>
+            <input type="tel" id="telephone" name="telephone" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="address">Private address <span aria-hidden="true">*</span></label>
+          <textarea id="address" name="address" rows="3" autocomplete="street-address" required></textarea>
+          <p class="hint">Your own address, including the postcode. The invoice address is asked for
+             separately at the bottom.</p>
+        </div>
+        <div class="field">
+          <label for="email">Email <span aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+          <p class="hint">Everything about the application goes to this address, and it becomes your
+             sign in if the application is approved.</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="fset">
+        <legend>Employment details</legend>
+        <div class="two">
+          <div class="field">
+            <label for="employer">Employer <span aria-hidden="true">*</span></label>
+            <input type="text" id="employer" name="employer" autocomplete="organization" required>
+          </div>
+          <div class="field">
+            <label for="position">Current position <span aria-hidden="true">*</span></label>
+            <input type="text" id="position" name="position" autocomplete="organization-title" required>
+          </div>
+        </div>
+        <div class="field" style="max-width:340px">
+          <label for="appointed">Date appointed <span aria-hidden="true">*</span></label>
+          <input type="date" id="appointed" name="appointed" required>
+        </div>
+      </fieldset>
+
+      <fieldset class="fset">
+        <legend>Supporting documentation</legend>
+
+        <div class="field">
+          <label for="cv">Current CV <span aria-hidden="true">*</span></label>
+          <div class="drop" data-drop="cv">
+            <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
+            <div class="picked" data-picked="cv"></div>
+          </div>
+          <p class="hint">The CV must detail, where relevant, the requirements to satisfy the Rules of
+             Membership for the category of membership applied for.</p>
+        </div>
+
+        <div class="field">
+          <label for="training">Current training certificates</label>
+          <div class="drop" data-drop="training">
+            <input type="file" id="training" name="training" accept=".pdf,.doc,.docx,image/*" multiple>
+            <div class="picked" data-picked="training"></div>
+          </div>
+          <p class="hint">Relevant to the application. Several files can be chosen at once.</p>
+        </div>
+
+        <div class="field">
+          <label for="qualification">Qualification certificates</label>
+          <div class="drop" data-drop="qualification">
+            <input type="file" id="qualification" name="qualification" accept=".pdf,.doc,.docx,image/*" multiple>
+            <div class="picked" data-picked="qualification"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cscs">CSCS cards held</label>
+          <div class="drop" data-drop="cscs">
+            <input type="file" id="cscs" name="cscs" accept=".pdf,image/*" multiple>
+            <div class="picked" data-picked="cscs"></div>
+          </div>
+          <p class="hint">A photograph of the card is fine.</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="fset">
+        <legend>Please send the invoice to</legend>
+        <div class="field">
+          <label for="invoice_name">Name</label>
+          <input type="text" id="invoice_name" name="invoice_name">
+          <p class="hint">Leave both blank and the invoice goes to you at the address above.</p>
+        </div>
+        <div class="field">
+          <label for="invoice_address">Address</label>
+          <textarea id="invoice_address" name="invoice_address" rows="3"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset class="fset">
+        <legend>Declaration</legend>
+        <p style="color:var(--muted);font-size:15px;margin-bottom:18px;max-width:62ch">
+          By submitting this form you confirm that the information given is correct and complete,
+          and that the documents attached are your own.</p>
+        <div class="two">
+          <div class="field">
+            <label for="signed_name">Your name in full <span aria-hidden="true">*</span></label>
+            <input type="text" id="signed_name" name="signed_name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="signed_on">Date <span aria-hidden="true">*</span></label>
+            <input type="date" id="signed_on" name="signed_on" required>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- A honeypot. It is not shown and it is not announced to a screen reader,
+           so a person never meets it. A great many automated submissions fill in
+           every field they find, and the Worker quietly accepts and discards
+           anything that arrives with this one filled in. -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div id="msg"></div>
+      <p><button class="btn btn-p" id="go" type="submit">Submit the application</button></p>
+      <p class="hint" style="margin-top:16px">AMI holds what you send here to assess the application
+        and, if it is approved, to keep the membership record. It is not passed to anybody else.</p>
+    </form>
+  </section>
+</div></main>
+
+<script src="/assets/blocks.js?v=83"></script>
+<script src="/assets/site.js?v=83"></script>
+<script src="/assets/supabase.js?v=3"></script>
+<script src="/assets/page-apply.js?v=70"></script>
+</body>
+</html>

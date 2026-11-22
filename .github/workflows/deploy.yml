@@ -1,0 +1,93 @@
+# Deploys AMI from GitHub. Every push to main publishes whatever changed:
+#
+#   site/           to the Cloudflare Pages project ami-site (staging.ami.uk.com)
+#                   The site's own Worker, site/_worker.js, goes with it.
+#   admin/          to the Cloudflare Pages project ami-admin (admin-staging.ami.uk.com)
+#   dynamics-sync/  to the Worker ami-dynamics-sync, once its source is in this
+#                   repository
+#
+# The two Pages projects were made by direct upload and stay that way. This
+# uploads to them exactly as dragging a zip in did, so every setting and secret
+# already on them is kept, and nothing has to be moved or entered again.
+#
+# Needs two repository secrets (Settings, Secrets and variables, Actions):
+#   CLOUDFLARE_API_TOKEN   permissions: Account, Cloudflare Pages, Edit and
+#                          Account, Workers Scripts, Edit
+#   CLOUDFLARE_ACCOUNT_ID  the account the projects belong to
+#
+# The database is NOT deployed from here. Migrations are run on staging one at
+# a time, each followed by its test, and the result read before going on.
+#
+# Run it by hand from the Actions tab with "Run workflow" to publish everything
+# whether or not it changed.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a newer push waits rather than racing the older one.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      site: ${{ steps.f.outputs.site }}
+      admin: ${{ steps.f.outputs.admin }}
+      sync: ${{ steps.f.outputs.sync }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: f
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            site:
+              - 'site/**'
+            admin:
+              - 'admin/**'
+            sync:
+              - 'dynamics-sync/**'
+
+  site:
+    needs: changes
+    if: needs.changes.outputs.site == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy site --project-name=ami-site --branch=main --commit-dirty=true
+
+  admin:
+    needs: changes
+    if: needs.changes.outputs.admin == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy admin --project-name=ami-admin --branch=main --commit-dirty=true
+
+  sync:
+    needs: changes
+    if: (needs.changes.outputs.sync == 'true' || github.event_name == 'workflow_dispatch') && hashFiles('dynamics-sync/wrangler.toml', 'dynamics-sync/wrangler.jsonc') != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: dynamics-sync
+          # --keep-vars: the variables and secrets set in the dashboard stay as
+          # they are. Without it a deploy replaces them with the file's.
+          command: deploy --keep-vars

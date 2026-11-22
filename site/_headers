@@ -1,0 +1,51 @@
+# Every page is generated from live data, so it must never be served from a
+# cache. This is the header that was missing, and its absence is why a browser
+# went on using the previous stylesheet and script after a new deploy: the pages
+# were cached, so they kept asking for the old asset URLs.
+/*
+  Cache-Control: no-store
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://ttjvwxxtoidiiejyqmbc.supabase.co; font-src 'self'; connect-src 'self' https://ttjvwxxtoidiiejyqmbc.supabase.co; frame-src https://player.vimeo.com; media-src 'self'; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests
+
+# The Content Security Policy.
+#
+# script-src is 'self' with NO 'unsafe-inline', which is the whole point of it. A
+# policy that allows inline script allows exactly the thing it exists to stop, so
+# every page's script was lifted into /assets/page-<name>.js first and the one
+# remaining inline line became a data-nav attribute on the body. There is no
+# inline script left anywhere on this site, and if somebody adds one it will not
+# run, which is the correct outcome.
+#
+# style-src DOES allow inline, and that is a deliberate compromise rather than an
+# oversight. The pages use style attributes in a few dozen places; removing them
+# buys very little, because a style attribute cannot execute anything, and the
+# work would be out of proportion to the risk. Stated here so nobody mistakes it
+# for something that was missed.
+#
+# Everything else is named rather than wildcarded:
+#   img-src     the Supabase origin, for signed photograph links, plus data: and
+#               blob: for the pictures the cropper draws before anything is saved
+#   connect-src the Supabase origin and this site, and nothing else
+#   frame-src   the Vimeo player, which is the only third party frame on the site
+#   object-src  none, so no plugin content of any kind
+#   base-uri    none, so an injected <base> cannot repoint every relative URL
+#
+# If a page stops working after a change here, the browser console names the
+# directive that refused it. That is the message to read rather than to widen the
+# policy around.
+
+
+# The assets are safe to cache hard, because every reference to them carries a
+# version. Change a stylesheet, bump the version in the pages, and every browser
+# in the world asks for a URL it has never seen. Nobody has to know to hard
+# refresh, which is the only cache strategy that actually works.
+# The "! Cache-Control" line removes the no-store from /* above first. Without
+# it Cloudflare sent both, "no-store, public, max-age=31536000, immutable",
+# which contradicts itself (found by the security check, 31 October).
+/assets/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
