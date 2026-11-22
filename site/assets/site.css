@@ -831,7 +831,7 @@ body[data-page]:not(.blocks-ready) .pbanner.img{
 }
 
 /* ---------- contact ---------- */
-.contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,2vw,30px);align-items:start}
+.contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(18px,2vw,30px);align-items:stretch}
 @media(max-width:900px){.contact-grid{grid-template-columns:1fr}}
 .formcard{padding:clamp(24px,2.4vw,36px)}
 .formcard h3{font-size:20px;font-weight:800;margin-bottom:6px}
@@ -847,6 +847,12 @@ body[data-page]:not(.blocks-ready) .pbanner.img{
 .contact-info h5{font-size:15px;font-weight:800;margin-bottom:3px}
 .contact-info p{font-size:14px;color:var(--muted);line-height:1.5}
 .contact-info a{color:var(--link)}
+/* The two panels stand the same height side by side, so the page reads as balanced.
+   The details panel then shares out its extra height evenly between its rows,
+   each row's contents sitting in the middle of its share, rather than leaving
+   a block of empty glass at the bottom. Stacked on a narrow screen it is just a list. */
+.contact-info{display:flex;flex-direction:column}
+@media(min-width:901px){.contact-info .row{flex:1;align-items:center}}
 
 /* ---------- login ---------- */
 .login-wrap{max-width:460px;margin:8px auto 0}
